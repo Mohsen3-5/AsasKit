@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AsasKit.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c080b1e8504564a970c6ed31b5191d3053c7258")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a062ae54e20e8ee2f02be84754b8a007b1b98bb9")]
 [assembly: System.Reflection.AssemblyProductAttribute("AsasKit.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AsasKit.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

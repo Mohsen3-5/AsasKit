@@ -2,4 +2,4 @@
 using MediatR;
 
 namespace AsasKit.Application.Tenancy;
-public record CreateTenant(string Name, string Slug) : IRequest<Guid>;
+public sealed record CreateTenant(string Name, string Slug) : IRequest<Guid>;
