@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AsasKit.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96f41ea350f4cb4417bbbe5af85494eb27933362")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c080b1e8504564a970c6ed31b5191d3053c7258")]
 [assembly: System.Reflection.AssemblyProductAttribute("AsasKit.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AsasKit.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

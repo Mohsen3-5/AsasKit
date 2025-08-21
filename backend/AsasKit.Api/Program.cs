@@ -1,41 +1,58 @@
+using AsasKit.Application.Abstractions;
+using AsasKit.Application.Tenancy;    
+using AsasKit.Application.Behaviors;
+using AsasKit.Infrastructure;
+using AsasKit.Infrastructure.Data;
+using FluentValidation;
+using MediatR;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// HttpContext accessor for providers
+builder.Services.AddHttpContextAccessor();
+
+// Infra (EF/Identity/etc.)
+builder.Services.AddInfrastructure(builder.Configuration);
+
+// MediatR + Validators
+builder.Services.AddMediatR(cfg =>
+                            {
+                                cfg.RegisterServicesFromAssemblyContaining<CreateTenant>();
+                            });
+builder.Services.AddValidatorsFromAssembly(typeof(CreateTenant).Assembly);
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+// Tenant & current user providers (HTTP-scoped)
+builder.Services.AddScoped<ICurrentUser, HttpCurrentUser>();
+builder.Services.AddScoped<ITenantProvider, HttpTenantProvider>();
+
+// Map infra tenant accessor to app tenant provider
+builder.Services.AddScoped<ITenantAccessor>(sp =>
+{
+    var tp = sp.GetRequiredService<ITenantProvider>();
+    return new TenantAccessor(tp.CurrentTenantId);
+});
+
+// Swagger / OpenAPI
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.MapGet("/health", () => Results.Ok(new { ok = true, ts = DateTime.UtcNow }));
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+/// ------------ HTTP adapters (Api-layer only) ------------
+sealed class HttpCurrentUser(IHttpContextAccessor accessor) : ICurrentUser
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public Guid UserId => TryGuid(accessor.HttpContext?.User?.FindFirst("sub")?.Value);
+    public bool IsAuthenticated => accessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+    static Guid TryGuid(string? s) => Guid.TryParse(s, out var g) ? g : Guid.Empty;
+}
+
+sealed class HttpTenantProvider(IHttpContextAccessor accessor) : ITenantProvider
+{
+    // For now: from header; later switch to subdomain resolver
+    public Guid CurrentTenantId =>
+        Guid.TryParse(accessor.HttpContext?.Request.Headers["X-Tenant"], out var g) ? g : Guid.Empty;
 }

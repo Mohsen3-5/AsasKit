@@ -1,0 +1,8 @@
+/Users/mohsen/asaskit/backend/AsasKit.Api/obj/Debug/net9.0/AsasKit.Api.csproj.AssemblyReference.cache
+/Users/mohsen/asaskit/backend/AsasKit.Api/obj/Debug/net9.0/AsasKit.Api.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mohsen/asaskit/backend/AsasKit.Api/obj/Debug/net9.0/AsasKit.Api.AssemblyInfoInputs.cache
+/Users/mohsen/asaskit/backend/AsasKit.Api/obj/Debug/net9.0/AsasKit.Api.AssemblyInfo.cs
+/Users/mohsen/asaskit/backend/AsasKit.Api/obj/Debug/net9.0/AsasKit.Api.csproj.CoreCompileInputs.cache
+/Users/mohsen/asaskit/backend/AsasKit.Api/obj/Debug/net9.0/AsasKit.Api.MvcApplicationPartsAssemblyInfo.cs
+/Users/mohsen/asaskit/backend/AsasKit.Api/obj/Debug/net9.0/AsasKit.Api.MvcApplicationPartsAssemblyInfo.cache
+/Users/mohsen/asaskit/backend/AsasKit.Api/obj/Debug/net9.0/AsasKit.Api.sourcelink.json

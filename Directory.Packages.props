@@ -9,5 +9,5 @@
         <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
         <PackageVersion Include="Hangfire.AspNetCore" Version="1.8.14" />
         <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-    </ItemGroup>
+    </ItemGroup> 
 </Project>
