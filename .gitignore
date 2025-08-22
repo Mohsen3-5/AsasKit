@@ -1,0 +1,80 @@
+# -----------------------------
+# OS junk
+# -----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -----------------------------
+# Editors / IDEs
+# -----------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.iml
+.vs/
+
+# -----------------------------
+# .NET / C#
+# -----------------------------
+**/bin/
+**/obj/
+**/out/
+**/TestResults/
+*.user
+*.suo
+*.rsuser
+*.VisualState.xml
+*.sln.docstates
+*.svclog
+*.log
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Rider caches
+/.ReSharper*/
+*_ReSharper*/
+*.DotSettings.user
+
+# -----------------------------
+# Node / Angular
+# -----------------------------
+**/node_modules/
+**/dist/
+**/tmp/
+**/.cache/
+**/.angular/cache/
+**/coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -----------------------------
+# Env & secrets
+# -----------------------------
+**/.env
+**/.env.*
+!**/.env.example
+**/appsettings.*.local.json
+
+# -----------------------------
+# Databases (dev)
+# -----------------------------
+*.db
+*.db-shm
+*.db-wal
+
+# -----------------------------
+# Docker
+# -----------------------------
+docker-compose.override.yml
+*.pid
