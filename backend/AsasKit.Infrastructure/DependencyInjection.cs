@@ -14,7 +14,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration cfg)
     {
-        services.Configure<DataOptions>(cfg.GetSection("Data"));
+        services.AddOptions<DataOptions>()
+                .Configure<IConfiguration>((opts, configuration) =>
+                    configuration.GetSection("Data").Bind(opts));
 
         services.AddDbContext<AppDbContext>((sp, b) =>
         {
