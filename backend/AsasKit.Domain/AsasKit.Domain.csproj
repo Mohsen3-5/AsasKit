@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Identity\AsasKit.Modules.Identity\AsasKit.Modules.Identity.csproj" />
+  </ItemGroup>
+
 </Project>

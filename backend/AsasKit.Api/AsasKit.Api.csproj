@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
   </ItemGroup>
 
@@ -15,6 +19,9 @@
     <ProjectReference Include="..\AsasKit.Application\AsasKit.Application.csproj" />
     <ProjectReference Include="..\AsasKit.Infrastructure\AsasKit.Infrastructure.csproj" />
     <ProjectReference Include="..\AsasKit.Shared\AsasKit.Shared.csproj" />
+    <ProjectReference Include="..\..\Modules\Identity\AsasKit.Modules.Identity\AsasKit.Modules.Identity.csproj" />
+    <ProjectReference Include="..\..\Modules\Identity\AsasKit.Modules.Identity.Contracts\AsasKit.Modules.Identity.Contracts.csproj" />
+    <ProjectReference Include="..\..\Kernel\Kernel.csproj" />
   </ItemGroup>
 
 </Project>

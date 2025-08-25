@@ -1,12 +1,11 @@
 using AsasKit.Application.Abstractions.Persistence;
 using AsasKit.Infrastructure.Data;
-using AsasKit.Infrastructure.Models;
 using AsasKit.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AsasKit.Infrastructure;
 
@@ -54,9 +53,6 @@ public static class DependencyInjection
             }
         });
 
-        services.AddIdentityCore<AppUser>()
-            .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<AppDbContext>();
 
         // Repositories + UoW
         services.AddScoped<ITenantRepository, TenantRepository>();

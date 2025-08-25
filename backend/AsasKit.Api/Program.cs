@@ -1,58 +1,42 @@
-using AsasKit.Application.Abstractions;
-using AsasKit.Application.Tenancy;    
-using AsasKit.Application.Behaviors;
+﻿using System.Security.Claims;
 using AsasKit.Infrastructure;
 using AsasKit.Infrastructure.Data;
-using FluentValidation;
-using MediatR;
+using AsasKit.Kernel;
+using AsasKit.Modules.Identity;
+using AsasKit.Modules.Identity.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// HttpContext accessor for providers
+// Provide tenant info to AppDbContext (reads header X-Tenant)
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ITenantAccessor, HeaderTenantAccessor>();
 
-// Infra (EF/Identity/etc.)
+// Use Infra (DbContext, repos, UoW...) but DO NOT register Identity here.
+// The Identity module will own Identity.
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// MediatR + Validators
-builder.Services.AddMediatR(cfg =>
-                            {
-                                cfg.RegisterServicesFromAssemblyContaining<CreateTenant>();
-                            });
-builder.Services.AddValidatorsFromAssembly(typeof(CreateTenant).Assembly);
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
-// Tenant & current user providers (HTTP-scoped)
-builder.Services.AddScoped<ICurrentUser, HttpCurrentUser>();
-builder.Services.AddScoped<ITenantProvider, HttpTenantProvider>();
-
-// Map infra tenant accessor to app tenant provider
-builder.Services.AddScoped<ITenantAccessor>(sp =>
-{
-    var tp = sp.GetRequiredService<ITenantProvider>();
-    return new TenantAccessor(tp.CurrentTenantId);
-});
-
-// Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
-var app = builder.Build();
+// Boot modules (IdentityStartupModule calls AddIdentityModule + maps /auth)
+var app = ModuleRunner.Build(builder, typeof(IdentityStartupModule));
 
-app.MapGet("/health", () => Results.Ok(new { ok = true, ts = DateTime.UtcNow }));
+app.MapGet("/health", () => Results.Ok(new { ok = true }));
+app.MapGet("/me", async (ICurrentUser cu, IUserDirectory userDirectory, CancellationToken cancellationToken) =>
+{
+    if (!cu.IsAuthenticated) return Results.Unauthorized();
+
+    var me = await userDirectory.GetAsync(cu.Id!.Value, cu.TenantId!.Value, cancellationToken); // ✅ await
+    return me is null ? Results.NotFound() : Results.Ok(me);
+}).RequireAuthorization();
+
 
 app.Run();
 
-/// ------------ HTTP adapters (Api-layer only) ------------
-sealed class HttpCurrentUser(IHttpContextAccessor accessor) : ICurrentUser
+// ---- local adapter ----
+sealed class HeaderTenantAccessor(IHttpContextAccessor http) : ITenantAccessor
 {
-    public Guid UserId => TryGuid(accessor.HttpContext?.User?.FindFirst("sub")?.Value);
-    public bool IsAuthenticated => accessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-    static Guid TryGuid(string? s) => Guid.TryParse(s, out var g) ? g : Guid.Empty;
-}
-
-sealed class HttpTenantProvider(IHttpContextAccessor accessor) : ITenantProvider
-{
-    // For now: from header; later switch to subdomain resolver
     public Guid CurrentTenantId =>
-        Guid.TryParse(accessor.HttpContext?.Request.Headers["X-Tenant"], out var g) ? g : Guid.Empty;
+        Guid.TryParse(http.HttpContext?.Request.Headers["X-Tenant"], out var g) ? g : Guid.Empty;
 }

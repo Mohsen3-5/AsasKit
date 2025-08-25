@@ -3,8 +3,6 @@
 using AsasKit.Domain.Common.Entity;
 
 namespace AsasKit.Domain.Tenancy;
-using AsasKit.Domain.Common;
-
 public sealed class Tenant : Entity<Guid>
 {
     public string Name { get; private set; }
