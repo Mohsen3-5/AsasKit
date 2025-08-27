@@ -1,6 +1,7 @@
 ﻿// backend/Modules/Identity/AsasKit.Modules.Identity/IdentityModuleExtensions.cs
 using System.Text;
 using AsasKit.Modules.Identity.Contracts;
+using AsasKit.Modules.Identity.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -37,6 +38,7 @@ public static class IdentityModuleExtensions
         services.AddHttpContextAccessor();
         services.TryAddScoped<ICurrentPrincipalAccessor, HttpCurrentPrincipalAccessor>();
         services.TryAddScoped<ICurrentUser, CurrentUser>();
+        services.AddScoped<ITokenService, TokenService>(); // <-- no <TUser>
 
         return services;
     }
@@ -128,6 +130,7 @@ public static class IdentityModuleExtensions
     /// Minimal endpoints for quick start:
     ///   POST /auth/register
     ///   POST /auth/login
+    ///   POST /auth/refresh-token
     /// </summary>
     public static IEndpointRouteBuilder MapIdentityEndpoints(this IEndpointRouteBuilder app)
     {
@@ -138,6 +141,12 @@ public static class IdentityModuleExtensions
 
         g.MapPost("/login", async (IAuthService svc, LoginRequest req)
             => Results.Ok(await svc.LoginAsync(req)));
+
+        g.MapPost("/forget-password", async (IAuthService svc, ForgotPasswordRequest req)
+           => Results.Ok(await svc.ForgotPasswordAsync(req)));
+
+        g.MapPost("/refresh-token", async (ITokenService svc, RefreshRequest req)
+            => Results.Ok(await svc.RefreshAsync(req)));
 
         return app;
     }

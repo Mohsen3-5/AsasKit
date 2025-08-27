@@ -1,6 +1,6 @@
 ﻿// Modules/Identity/AsasKit.Modules.Identity/UserDirectory.cs
-using AsasKit.Modules.Identity;
 using AsasKit.Modules.Identity.Contracts;
+using AsasKit.Modules.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
