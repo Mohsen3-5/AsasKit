@@ -1,4 +1,4 @@
-﻿namespace AsasKit.Core;
+﻿namespace AsasKit.Core.Primitives;
 
 public abstract class ValueObject
 {

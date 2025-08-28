@@ -1,4 +1,4 @@
-﻿namespace AsasKit.Core;
+﻿namespace AsasKit.Core.Paging;
 
 public sealed record PagedResult<T>(IReadOnlyList<T> Items, int Total, int Page, int Size)
 {

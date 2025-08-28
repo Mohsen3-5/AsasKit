@@ -1,4 +1,6 @@
-﻿namespace AsasKit.Core;
+﻿using AsasKit.Core.Exceptions;
+
+namespace AsasKit.Core.Guards;
 
 public static class Guard
 {

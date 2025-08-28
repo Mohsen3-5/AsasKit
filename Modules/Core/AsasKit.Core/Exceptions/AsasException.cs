@@ -1,4 +1,4 @@
-﻿namespace AsasKit.Core;
+﻿namespace AsasKit.Core.Exceptions;
 
 public sealed class AsasException : Exception
 {

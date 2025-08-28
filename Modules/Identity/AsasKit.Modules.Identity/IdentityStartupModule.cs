@@ -1,5 +1,6 @@
-﻿using AsasKit.Kernel;
-using AsasKit.Modules.Identity.Contracts;
+﻿using AsasKit.Modules.Identity.Contracts;
+using AsasKit.Modules.Identity.Repo;
+using Kernel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;

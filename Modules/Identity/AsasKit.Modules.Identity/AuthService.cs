@@ -1,15 +1,12 @@
-﻿using AsasKit.Core;
-using AsasKit.Modules.Identity.Application.Events;
+﻿using AsasKit.Core.Abstractions;
 using AsasKit.Modules.Identity.Contracts;
 using AsasKit.Modules.Identity.Entities;
+using AsasKit.Modules.Identity.Events;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 internal sealed class AuthService(
     UserManager<AsasUser> users,
-    ITokenService refreshSvc ,
-    IEventPublisher events // ← inject
-) : IAuthService
+    ITokenService refreshSvc) : IAuthService
 {
     public async Task<AuthResult> RegisterAsync(RegisterRequest r, CancellationToken ct = default)
     {
@@ -30,14 +27,6 @@ internal sealed class AuthService(
 
         var roles = await users.GetRolesAsync(u);
         var auth = await IssueAsync(u, roles, device: r.Device, ct);
-
-        // Fire-and-forget (in-proc) app event
-        await events.PublishAppAsync(new UserLoggedIn(
-            UserId: u.Id,
-            TenantId: u.TenantId,
-            Email: u.Email ?? "",
-            Device: r.Device
-        ), ct);
 
         return auth;
     }

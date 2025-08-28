@@ -1,4 +1,4 @@
-﻿namespace AsasKit.Core;
+﻿namespace AsasKit.Core.Exceptions;
 
 /// <summary>Throw with field errors; map to 400 in your web layer.</summary>
 public sealed class ValidationProblemException : Exception

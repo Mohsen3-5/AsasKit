@@ -1,8 +1,10 @@
 ﻿// Domain/IDomainEvent.cs
-namespace AsasKit.Core;
+using MediatR;
+
+namespace AsasKit.Core.Domain;
 
 /// <summary>Event that represents a fact that occurred within a domain aggregate.</summary>
-public interface IDomainEvent
+public interface IDomainEvent : INotification
 {
     DateTime OccurredAtUtc { get; }
 }

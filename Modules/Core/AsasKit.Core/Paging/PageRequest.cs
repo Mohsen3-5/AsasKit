@@ -1,4 +1,4 @@
-﻿namespace AsasKit.Core;
+﻿namespace AsasKit.Core.Paging;
 
 public sealed record PageRequest(int Page = 1, int Size = 20)
 {

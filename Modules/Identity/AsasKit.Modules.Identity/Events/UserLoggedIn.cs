@@ -1,14 +1,13 @@
-﻿using AsasKit.Core;
-using MediatR;
+﻿using AsasKit.Core.Domain;
 
-namespace AsasKit.Modules.Identity.Application.Events;
+namespace AsasKit.Modules.Identity.Events;
 
 public sealed record UserLoggedIn(
     Guid UserId,
     Guid TenantId,
     string Email,
     string? Device
-) : IAppEvent, INotification
+) : IAppEvent
 {
     public DateTime OccurredAtUtc => DateTime.UtcNow;
 }

@@ -1,5 +1,5 @@
 ﻿// Domain/IIntegrationEvent.cs
-namespace AsasKit.Core;
+namespace AsasKit.Core.Domain;
 
 /// <summary>Cross-process message contract. Must be versioned and idempotent.</summary>
 public interface IIntegrationEvent

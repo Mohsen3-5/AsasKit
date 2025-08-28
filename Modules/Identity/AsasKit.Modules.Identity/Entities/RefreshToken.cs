@@ -1,5 +1,5 @@
 ﻿// Modules/Identity/Model.cs (or a new file RefreshToken.cs next to it)
-namespace AsasKit.Modules.Identity;
+namespace AsasKit.Modules.Identity.Entities;
 
 public class RefreshToken
 {

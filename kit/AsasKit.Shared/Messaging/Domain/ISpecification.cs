@@ -1,5 +1,5 @@
 ﻿// Domain/ISpecification.cs
-namespace AsasKit.Core;
+namespace AsasKit.Core.Domain;
 
 /// <summary>
 /// Minimal specification contract. Infrastructure can adapt it to DB queries; in-memory checks can use IsSatisfiedBy.

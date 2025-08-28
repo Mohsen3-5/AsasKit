@@ -1,4 +1,4 @@
-﻿namespace AsasKit.Core;
+﻿namespace AsasKit.Core.Primitives;
 
 public readonly record struct Error(string Code, string Message)
 {

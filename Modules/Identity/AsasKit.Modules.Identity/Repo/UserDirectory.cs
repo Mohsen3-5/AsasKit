@@ -4,7 +4,7 @@ using AsasKit.Modules.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace AsasKit.Modules.Identity;
+namespace AsasKit.Modules.Identity.Repo;
 
 public sealed class UserDirectory(UserManager<AsasUser> users) : IUserDirectory
 {
