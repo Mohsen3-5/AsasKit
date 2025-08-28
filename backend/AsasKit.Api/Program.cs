@@ -2,6 +2,7 @@
 using AsasKit.Infrastructure.Data;
 using AsasKit.Modules.Identity;
 using AsasKit.Modules.Identity.Contracts;
+using AsasKit.Modules.Identity.Entities;
 using AsasKit.Modules.Identity.Events;
 using AsasKit.Shared.Messaging.Abstractions;
 using Kernel;
@@ -25,7 +26,10 @@ builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 // Boot modules (IdentityStartupModule calls AddIdentityModule + maps /auth)
-var app = ModuleRunner.Build(builder, typeof(IdentityStartupModule));
+var app = ModuleRunner.Build(builder,
+    typeof(IdentityStartupModule),
+    typeof(UowStartupModule<AsasIdentityDbContext<AsasUser>>));
+
 
 app.MapGet("/health", () => Results.Ok(new { ok = true }));
 app.MapGet("/me", async (ICurrentUser cu,IEventPublisher events, IUserDirectory userDirectory, CancellationToken cancellationToken) =>
