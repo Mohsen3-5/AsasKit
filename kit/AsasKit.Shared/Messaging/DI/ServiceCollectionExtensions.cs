@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using AsasKit.Core.Abstractions;
+using AsasKit.Shared.Messaging.Abstractions;
 using AsasKit.Shared.Messaging.Publishing;
 using Microsoft.Extensions.DependencyInjection;
 

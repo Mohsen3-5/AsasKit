@@ -1,5 +1,5 @@
 ﻿// Domain/MessageEnvelope.cs
-namespace AsasKit.Core.Domain;
+namespace AsasKit.Shared.Messaging.Domain;
 
 /// <summary>Transport envelope for messages published to a broker or persisted in an outbox.</summary>
 public sealed record MessageEnvelope<T>(

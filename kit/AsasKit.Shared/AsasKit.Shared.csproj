@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Modules\Core\AsasKit.Core\AsasKit.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Messaging\Domain\" />
   </ItemGroup>
 

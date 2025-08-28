@@ -1,5 +1,4 @@
-﻿using AsasKit.Core.Abstractions;
-using AsasKit.Modules.Identity.Contracts;
+﻿using AsasKit.Modules.Identity.Contracts;
 using AsasKit.Modules.Identity.Entities;
 using AsasKit.Modules.Identity.Events;
 using Microsoft.AspNetCore.Identity;

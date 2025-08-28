@@ -1,7 +1,9 @@
 ﻿// Abstractions/IEventPublisher.cs
-using AsasKit.Core.Domain;
 
-namespace AsasKit.Core.Abstractions;
+// Abstractions/IEventPublisher.cs
+using AsasKit.Shared.Messaging.Domain;
+
+namespace AsasKit.Shared.Messaging.Abstractions;
 
 /// <summary>Publishes events to in-proc handlers and/or external transports (via infra adapters).</summary>
 public interface IEventPublisher

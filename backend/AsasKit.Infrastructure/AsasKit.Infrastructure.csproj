@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Modules\Core\AsasKit.Core\AsasKit.Core.csproj" />
     <ProjectReference Include="..\AsasKit.Domain\AsasKit.Domain.csproj" />
     <ProjectReference Include="..\AsasKit.Application\AsasKit.Application.csproj" />
     <ProjectReference Include="..\AsasKit.Shared\AsasKit.Shared.csproj" />

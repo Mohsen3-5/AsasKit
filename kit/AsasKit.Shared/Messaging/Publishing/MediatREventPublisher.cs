@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using AsasKit.Core.Abstractions;
-using AsasKit.Core.Domain;
+using AsasKit.Shared.Messaging.Abstractions;
+using AsasKit.Shared.Messaging.Domain;
 
 namespace AsasKit.Shared.Messaging.Publishing;
 

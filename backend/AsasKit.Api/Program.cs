@@ -1,9 +1,9 @@
-﻿using AsasKit.Core.Abstractions;
-using AsasKit.Infrastructure;
+﻿using AsasKit.Infrastructure;
 using AsasKit.Infrastructure.Data;
 using AsasKit.Modules.Identity;
 using AsasKit.Modules.Identity.Contracts;
 using AsasKit.Modules.Identity.Events;
+using AsasKit.Shared.Messaging.Abstractions;
 using Kernel;
 using Microsoft.Extensions.Logging;
 

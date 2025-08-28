@@ -1,4 +1,4 @@
-﻿using AsasKit.Core.Domain;
+﻿using AsasKit.Shared.Messaging.Domain;
 
 namespace AsasKit.Modules.Identity.Events;
 

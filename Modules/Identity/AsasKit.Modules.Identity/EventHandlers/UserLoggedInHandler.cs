@@ -1,5 +1,4 @@
 ﻿// AsasKit.Modules.Identity.Application/EventHandlers/UserLoggedInHandler.cs
-using AsasKit.Core.Abstractions;
 using AsasKit.Modules.Identity.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;

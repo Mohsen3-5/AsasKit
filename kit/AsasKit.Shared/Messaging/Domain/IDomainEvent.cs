@@ -1,7 +1,7 @@
 ﻿// Domain/IDomainEvent.cs
 using MediatR;
 
-namespace AsasKit.Core.Domain;
+namespace AsasKit.Shared.Messaging.Domain;
 
 /// <summary>Event that represents a fact that occurred within a domain aggregate.</summary>
 public interface IDomainEvent : INotification
