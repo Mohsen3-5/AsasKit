@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Modules\Shared\AsasKit.Application\AsasKit.Application.csproj" />
     <ProjectReference Include="..\AsasKit.Application\AsasKit.Application.csproj" />
     <ProjectReference Include="..\AsasKit.Infrastructure\AsasKit.Infrastructure.csproj" />
     <ProjectReference Include="..\AsasKit.Shared\AsasKit.Shared.csproj" />

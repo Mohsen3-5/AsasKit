@@ -12,7 +12,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\AsasKit.Core\AsasKit.Core.csproj" />
-		<ProjectReference Include="..\..\Shared\AsasKit.Application\AsasKit.Application.csproj" />
 		<ProjectReference Include="..\AsasKit.Modules.Identity.Contracts\AsasKit.Modules.Identity.Contracts.csproj" />
 		<ProjectReference Include="..\..\..\Kernel\Kernel.csproj" />
 	</ItemGroup>

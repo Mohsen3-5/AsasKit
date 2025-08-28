@@ -1,4 +1,5 @@
-﻿using AsasKit.Application;
+﻿using AsasKit.Core;
+using MediatR;
 
 namespace AsasKit.Modules.Identity.Application.Events;
 
@@ -7,4 +8,7 @@ public sealed record UserLoggedIn(
     Guid TenantId,
     string Email,
     string? Device
-) : AppEventBase;
+) : IAppEvent, INotification
+{
+    public DateTime OccurredAtUtc => DateTime.UtcNow;
+}
