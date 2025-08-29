@@ -27,8 +27,7 @@ builder.Services.AddAuthorization();
 
 // Boot modules (IdentityStartupModule calls AddIdentityModule + maps /auth)
 var app = ModuleRunner.Build(builder,
-    typeof(IdentityStartupModule),
-    typeof(UowStartupModule<AsasIdentityDbContext<AsasUser>>));
+    typeof(IdentityStartupModule));
 
 
 app.MapGet("/health", () => Results.Ok(new { ok = true }));

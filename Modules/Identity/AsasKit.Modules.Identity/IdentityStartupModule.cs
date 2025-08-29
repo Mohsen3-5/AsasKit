@@ -1,4 +1,5 @@
 ﻿using AsasKit.Modules.Identity.Contracts;
+using AsasKit.Modules.Identity.Entities;
 using AsasKit.Modules.Identity.Repo;
 using Kernel;
 using Microsoft.AspNetCore.Builder;
@@ -18,7 +19,7 @@ public sealed class IdentityStartupModule : AsasModule
         // your extension we wrote earlier (non-generic)
         services.AddIdentityModule(cfg, cs, provider);
         services.AddScoped<IUserDirectory, UserDirectory>();
-
+        services.AddUowFor<AsasIdentityDbContext<AsasUser>>(cfg);
     }
 
     public override void OnApplicationInitialization(IApplicationBuilder app)

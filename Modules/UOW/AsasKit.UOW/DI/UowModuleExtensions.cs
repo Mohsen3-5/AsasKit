@@ -1,28 +1,30 @@
-﻿using AsasKit.UOW.Behaviors;
+﻿// UoW registration as an extension (no module needed)
+using AsasKit.UOW.Abstractions;
+using AsasKit.UOW.Behaviors;
 using AsasKit.UOW.Options;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
-namespace AsasKit.UOW.DI;
-
-public static class UowModuleExtensions
+public static class UowServiceCollectionExtensions
 {
-    /// <summary>
-    /// Registers UoW options + MediatR UnitOfWorkBehavior. 
-    /// NOTE: You must map IUnitOfWork to your primary DbContext in composition root.
-    /// </summary>
-    public static IServiceCollection AddUowModule(
-        this IServiceCollection services,
-        IConfiguration? config = null,
-        Action<UowOptions>? configure = null)
+    public static IServiceCollection AddUowFor<TDbContext>(this IServiceCollection services, IConfiguration cfg)
+        where TDbContext : DbContext
     {
-        if (config is not null)
-            services.Configure<UowOptions>(config.GetSection("Uow"));
-        if (configure is not null)
-            services.Configure(configure);
-
+        services.Configure<UowOptions>(cfg.GetSection("Uow"));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
+
+        services.AddScoped<IUnitOfWork>(sp =>
+        {
+            var db = sp.GetRequiredService<TDbContext>();
+            if (db is IUnitOfWork uow) return uow;
+
+            var ev = sp.GetRequiredService<AsasKit.Shared.Messaging.Abstractions.IEventPublisher>();
+            var opt = sp.GetRequiredService<IOptions<UowOptions>>();
+            return new DbContextUowAdapter<TDbContext>(db, ev, opt);
+        });
 
         return services;
     }
