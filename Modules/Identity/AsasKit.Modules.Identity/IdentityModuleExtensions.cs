@@ -30,7 +30,7 @@ public static class IdentityModuleExtensions
         string provider = "sqlserver")
     {
         // Reuse the generic path with default types
-        services.AddIdentityModule<AsasUser, IdentityDbContext>(cfg, connectionString, provider);
+        services.AddIdentityModule<AsasUser, AsasIdentityDbContext<AsasUser>>(cfg, connectionString, provider);
 
         // If you have a non-generic AuthService, wire it here:
         // (Comment this out if you only use AuthService<TUser>.)

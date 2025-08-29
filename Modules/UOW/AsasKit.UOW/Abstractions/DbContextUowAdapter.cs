@@ -29,13 +29,12 @@ public sealed class DbContextUowAdapter<TDbContext> : IUnitOfWork
     {
         ApplyAuditing();
 
-        var domainEvents = Dequeue<IDomainEvent>(a => a.DequeueDomainEvents());
-        var integrationEvents = Dequeue<IIntegrationEvent>(a => a.DequeueIntegrationEvents()); // TODO: enqueue to outbox if you have one
+        //var domainEvents = Dequeue<IDomainEvent>(a => a.DequeueDomainEvents());
 
         var rows = await _db.SaveChangesAsync(ct);
 
-        foreach (var e in domainEvents)
-            await _events.PublishDomainAsync(e, ct);
+        //foreach (var e in domainEvents)
+        //    await _events.PublishDomainAsync(e, ct);
 
         if (_db.ChangeTracker.HasChanges())
             rows += await _db.SaveChangesAsync(ct);

@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using AsasKit.Modules.Identity.Contracts;
 using AsasKit.Modules.Identity.Entities;
+using AsasKit.UOW.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,23 +16,25 @@ namespace AsasKit.Modules.Identity;
 
 internal sealed class TokenService : ITokenService
 {
-    private readonly IdentityDbContext _db;
+    private readonly AsasIdentityDbContext<AsasUser> _db;
     private readonly UserManager<AsasUser> _userManager;
     private readonly IOptions<JwtOptions> _jwtOptions;
     // If you have it registered, swap the null helpers to use it.
     private readonly IHttpContextAccessor? _http;
+    private readonly IUnitOfWork _unitOfWork;
 
     public TokenService(
-        IdentityDbContext  db,
+        AsasIdentityDbContext<AsasUser> db,
         IOptions<JwtOptions> jwtOptions,
          UserManager<AsasUser> userManager,
-        IHttpContextAccessor? http = null
-       )
+           IUnitOfWork unitOfWork,
+        IHttpContextAccessor? http = null)
     {
         _db = db;
         _jwtOptions = jwtOptions;
         _http = http;
         _userManager = userManager;
+        _unitOfWork = unitOfWork;
     }
 
     /// <summary>
@@ -67,7 +70,7 @@ internal sealed class TokenService : ITokenService
         };
 
         _db.RefreshTokens.Add(rt);
-        await _db.SaveChangesAsync(ct);
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return (accessToken, rawRefresh, accessExpUtc);
     }
