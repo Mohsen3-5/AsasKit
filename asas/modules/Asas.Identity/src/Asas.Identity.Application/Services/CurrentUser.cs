@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Asas.Identity.Application.Contracts;
 using Asas.Identity.Domain;
+using Asas.Identity.Infrastructure;
 
 namespace Asas.Identity.Application.Services;
 

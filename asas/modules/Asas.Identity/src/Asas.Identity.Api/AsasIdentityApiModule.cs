@@ -1,5 +1,6 @@
 ﻿// Asas.Identity.Api
-using Asas.Core.Modularity;
+using Asas.Identity.Application.Contracts;
+using Asas.Identity.Infrastructure.Repo;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +13,7 @@ public class AsasIdentityApiModule : AsasModule
         var provider = cfg["Data:Provider"] ?? "sqlserver";
         var cs = cfg.GetConnectionString("Default");
 
-        //services.AddIdentityModule(cfg, cs, provider);
-        // services.AddScoped<IUserDirectory, UserDirectory>();
+        services.AddIdentityModule(cfg, cs, provider);
+         services.AddScoped<IUserDirectory, UserDirectory>();
     }
 }

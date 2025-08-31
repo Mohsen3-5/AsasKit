@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Asas.Identity.Application.Contracts;
+namespace Asas.Identity.Infrastructure;
 
 public interface ICurrentPrincipalAccessor
 {

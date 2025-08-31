@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using Asas.Identity.Application.Contracts;
 using Microsoft.AspNetCore.Http;
 
 namespace Asas.Identity.Infrastructure;
