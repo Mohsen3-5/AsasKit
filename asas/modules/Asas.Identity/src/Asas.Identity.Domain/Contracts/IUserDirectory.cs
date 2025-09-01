@@ -1,5 +1,5 @@
 ﻿// Modules/Identity/AsasKit.Modules.Identity.Contracts/IUserDirectory.cs
-namespace Asas.Identity.Application.Contracts;
+namespace Asas.Identity.Domain.Contracts;
 
 public interface IUserDirectory
 {

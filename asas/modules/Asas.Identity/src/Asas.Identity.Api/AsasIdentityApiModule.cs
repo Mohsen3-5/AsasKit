@@ -1,5 +1,5 @@
 ﻿// Asas.Identity.Api
-using Asas.Identity.Application.Contracts;
+using Asas.Identity.Domain.Contracts;
 using Asas.Identity.Infrastructure.Repo;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
