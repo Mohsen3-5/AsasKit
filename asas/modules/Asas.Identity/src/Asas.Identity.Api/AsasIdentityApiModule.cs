@@ -1,6 +1,6 @@
-﻿// Asas.Identity.Api
-using Asas.Identity.Domain.Contracts;
+﻿using Asas.Identity.Domain.Contracts;
 using Asas.Identity.Infrastructure.Repo;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +13,13 @@ public class AsasIdentityApiModule : AsasModule
         var provider = cfg["Data:Provider"] ?? "sqlserver";
         var cs = cfg.GetConnectionString("Default");
 
-        services.AddIdentityModule(cfg, cs, provider);
-         services.AddScoped<IUserDirectory, UserDirectory>();
+        services.AddIdentityModule(cfg, cs, provider); // registers DbContext, Identity, JWT, migrations assembly, etc.
+        services.AddScoped<IUserDirectory, UserDirectory>();
+    }
+
+    public override void OnApplicationInitialization(IApplicationBuilder app)
+    {
+        app.UseAuthentication();
+        app.UseAuthorization();
     }
 }

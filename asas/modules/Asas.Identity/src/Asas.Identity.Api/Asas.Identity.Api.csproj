@@ -4,6 +4,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <IsPackable>true</IsPackable>
+	  <PackageId>Asas.Identity.Api</PackageId>
+	  <Description>ASP.NET Core integration (JWT, DI, middleware) for Asas Identity.</Description>
+	  <Authors>Asas</Authors>
+	  <Version>1.0.0</Version>  
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,8 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Asas.Messaging\Asas.Messaging.csproj" />
     <ProjectReference Include="..\..\..\..\kit\src\Asas.Core\Asas.Core.csproj" />
-    <ProjectReference Include="..\Asas.Identity.Application\Asas.Identity.Application.csproj" />
+	<ProjectReference Include="..\Asas.Identity.Application\Asas.Identity.Application.csproj" />
     <ProjectReference Include="..\Asas.Identity.Domain\Asas.Identity.Domain.csproj" />
 	 <ProjectReference Include="..\Asas.Identity.Infrastructure\Asas.Identity.Infrastructure.csproj" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />

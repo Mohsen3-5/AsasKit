@@ -1,3 +1,4 @@
+
 namespace Asas.Core.Primitives;
 public readonly record struct Error(string Code, string Message)
 {

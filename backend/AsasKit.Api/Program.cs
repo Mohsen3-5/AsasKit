@@ -1,55 +1,66 @@
-﻿using AsasKit.Infrastructure;
+﻿using Asas.Identity.Api;                 // AsasIdentityApiModule
+using Asas.Identity.Application.Contracts;
+using Asas.Identity.Domain.Contracts;
+using Asas.Messaging.Abstractions;
+using Asas.Messaging.DI;
+using AsasKit.Infrastructure;
 using AsasKit.Infrastructure.Data;
 using AsasKit.Modules.Identity;
-using AsasKit.Modules.Identity.Contracts;
-using AsasKit.Modules.Identity.Entities;
-using AsasKit.Modules.Identity.Events;
-using AsasKit.Shared.Messaging.Abstractions;
-using Kernel;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;          // for [FromServices]
 
+// ---- builder ----
 var builder = WebApplication.CreateBuilder(args);
 
-// Provide tenant info to AppDbContext (reads header X-Tenant)
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITenantAccessor, HeaderTenantAccessor>();
+
 builder.Services.AddAsasKitMessaging(
     typeof(IdentityAppAssemblyMarker).Assembly,
     typeof(Program).Assembly
 );
-// Use Infra (DbContext, repos, UoW...) but DO NOT register Identity here.
-// The Identity module will own Identity.
+
+// Your infra (DbContext, UoW...). DO NOT wire Identity here; the module will.
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
+// IMPORTANT: load the Identity module assembly (this registers Identity + JWT + DbContext, etc.)
+//builder.Services.AddAsasModules(builder.Configuration, typeof(AsasIdentityApiModule).Assembly);
+builder.Services.AddIdentityModule(builder.Configuration); // defaults
 
-// Boot modules (IdentityStartupModule calls AddIdentityModule + maps /auth)
-var app = ModuleRunner.Build(builder,
-    typeof(IdentityStartupModule));
+// Make sure controllers from the module are discoverable
+builder.Services.AddControllers();
 
+// ---- app ----
+var app = builder.Build();
 
+// Let modules run their OnApplicationInitialization (your module can call UseAuthentication/UseAuthorization too)
+//app.UseAsasModules();
+
+// Auth pipeline (keep these even if module also adds them; order matters)
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+app.MapIdentityEndpoints();
 app.MapGet("/health", () => Results.Ok(new { ok = true }));
-app.MapGet("/me", async (ICurrentUser cu,IEventPublisher events, IUserDirectory userDirectory, CancellationToken cancellationToken) =>
-{
-    if (!cu.IsAuthenticated) return Results.Unauthorized();
 
-    var me = await userDirectory.GetAsync(cu.Id!.Value, cu.TenantId!.Value, cancellationToken); // ✅ await
-
-    if(me != null)
+// Be explicit: these come from DI
+app.MapGet(
+    "/me",
+    async (
+        [FromServices] ICurrentUser cu,
+        [FromServices] IEventPublisher events,
+        [FromServices] IUserDirectory userDirectory,
+        CancellationToken ct
+    ) =>
     {
-        await events.PublishDomainAsync(new UserLoggedIn(
-            UserId: me.Id,
-            TenantId: me.TenantId,
-            Email: me.Email ?? "",
-            Device: ""
-        ), cancellationToken);
-    }
- 
-    return me is null ? Results.NotFound() : Results.Ok(me);
-}).RequireAuthorization();
+        if (!cu.IsAuthenticated) return Results.Unauthorized();
 
+        var me = await userDirectory.GetAsync(cu.Id!.Value, cu.TenantId!.Value, ct);
+
+        // if (me != null) await events.PublishDomainAsync(new UserLoggedIn(...), ct);
+
+        return me is null ? Results.NotFound() : Results.Ok(me);
+    }
+).RequireAuthorization();
 
 app.Run();
 
@@ -59,4 +70,3 @@ sealed class HeaderTenantAccessor(IHttpContextAccessor http) : ITenantAccessor
     public Guid CurrentTenantId =>
         Guid.TryParse(http.HttpContext?.Request.Headers["X-Tenant"], out var g) ? g : Guid.Empty;
 }
-
