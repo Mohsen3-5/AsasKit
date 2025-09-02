@@ -3,6 +3,7 @@ using Asas.Identity.Infrastructure.Repo;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Asas.Identity.Api;
 
@@ -13,13 +14,18 @@ public class AsasIdentityApiModule : AsasModule
         var provider = cfg["Data:Provider"] ?? "sqlserver";
         var cs = cfg.GetConnectionString("Default");
 
-        services.AddIdentityModule(cfg, cs, provider); // registers DbContext, Identity, JWT, migrations assembly, etc.
-        services.AddScoped<IUserDirectory, UserDirectory>();
+        services.AddIdentityModule(cfg, cs, provider); 
     }
 
     public override void OnApplicationInitialization(IApplicationBuilder app)
     {
+        var logger = app.ApplicationServices.GetRequiredService<ILogger<AsasIdentityApiModule>>();
+        logger.LogInformation("Initializing Identity API Module...");
+
         app.UseAuthentication();
         app.UseAuthorization();
+        IdentityModuleExtensions.MapIdentityEndpoints((Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)app);
+
+        logger.LogInformation("Identity API Module initialized successfully");
     }
 }

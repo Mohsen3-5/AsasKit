@@ -9,7 +9,7 @@
 	<Description>Domain layer for Asas Identity (entities, value objects, contracts).</Description>
 	<Authors>Asas</Authors>
 	<Company>Asas</Company>
-	<Version>1.0.0</Version>
+	<Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

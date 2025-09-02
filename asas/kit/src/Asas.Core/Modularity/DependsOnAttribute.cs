@@ -1,17 +1,9 @@
-﻿namespace Asas.Core.Modularity;
+﻿// Asas.Core.Modularity/DependsOnAttribute.cs
+namespace Asas.Core.Modularity;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class DependsOnAttribute : Attribute, IDependedTypesProvider
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public sealed class DependsOnAttribute : Attribute
 {
-    public Type[] DependedTypes { get; }
-
-    public DependsOnAttribute(params Type[]? dependedTypes)
-    {
-        DependedTypes = dependedTypes ?? Type.EmptyTypes;
-    }
-
-    public virtual Type[] GetDependedTypes()
-    {
-        return DependedTypes;
-    }
+    public DependsOnAttribute(params Type[] dependedModuleTypes) => DependedModuleTypes = dependedModuleTypes;
+    public Type[] DependedModuleTypes { get; }
 }

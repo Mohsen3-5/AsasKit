@@ -8,7 +8,7 @@
 	  <PackageId>Asas.Identity.Application</PackageId>
 	  <Description>Application layer for Asas Identity (use cases, services, contracts).</Description>
 	  <Authors>Asas</Authors>
-	  <Version>1.0.0</Version>
+	  <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

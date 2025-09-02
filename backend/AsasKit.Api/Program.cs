@@ -1,45 +1,27 @@
-﻿using Asas.Identity.Api;                 // AsasIdentityApiModule
+﻿using Asas.Core.Modularity;
+using Asas.Identity.Api;                 // AsasIdentityApiModule
 using Asas.Identity.Application.Contracts;
 using Asas.Identity.Domain.Contracts;
 using Asas.Messaging.Abstractions;
-using Asas.Messaging.DI;
-using AsasKit.Infrastructure;
+using AsasKit.Api;
 using AsasKit.Infrastructure.Data;
-using AsasKit.Modules.Identity;
-using Microsoft.AspNetCore.Mvc;          // for [FromServices]
+using Microsoft.AspNetCore.Mvc;
+using AsasKit.Infrastructure;
 
 // ---- builder ----
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ITenantAccessor, HeaderTenantAccessor>();
-
-builder.Services.AddAsasKitMessaging(
-    typeof(IdentityAppAssemblyMarker).Assembly,
-    typeof(Program).Assembly
-);
-
-// Your infra (DbContext, UoW...). DO NOT wire Identity here; the module will.
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// IMPORTANT: load the Identity module assembly (this registers Identity + JWT + DbContext, etc.)
-//builder.Services.AddAsasModules(builder.Configuration, typeof(AsasIdentityApiModule).Assembly);
-builder.Services.AddIdentityModule(builder.Configuration); // defaults
-
-// Make sure controllers from the module are discoverable
-builder.Services.AddControllers();
+builder.Services.AddApplication<AsasKitModule>(builder.Configuration);
 
 // ---- app ----
 var app = builder.Build();
 
-// Let modules run their OnApplicationInitialization (your module can call UseAuthentication/UseAuthorization too)
-//app.UseAsasModules();
-
 // Auth pipeline (keep these even if module also adds them; order matters)
-app.UseAuthentication();
-app.UseAuthorization();
+app.InitializeApplication();
+
 app.MapControllers();
-app.MapIdentityEndpoints();
 app.MapGet("/health", () => Results.Ok(new { ok = true }));
 
 // Be explicit: these come from DI

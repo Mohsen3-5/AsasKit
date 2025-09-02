@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc; // [FromBody]
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,6 +40,7 @@ public static class IdentityModuleExtensions
         // Current user plumbing
         services.TryAddScoped<ICurrentPrincipalAccessor, HttpCurrentPrincipalAccessor>();
         services.TryAddScoped<ICurrentUser, CurrentUser>();
+        services.AddScoped<IUserDirectory, UserDirectory>();
 
         // Token service
         services.TryAddScoped<ITokenService, TokenService>();
