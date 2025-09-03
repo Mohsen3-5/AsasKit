@@ -1,14 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	  <IsPackable>true</IsPackable>
 	  <PackageId>Asas.Identity.Application</PackageId>
 	  <Description>Application layer for Asas Identity (use cases, services, contracts).</Description>
-	  <Authors>Asas</Authors>
-	  <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
