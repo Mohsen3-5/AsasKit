@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asas.Tenancy.Contracts\Asas.Tenancy.Contracts.csproj" />
+    <ProjectReference Include="..\Asas.Tenancy.Domain\Asas.Tenancy.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

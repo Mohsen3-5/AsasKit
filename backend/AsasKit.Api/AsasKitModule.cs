@@ -1,13 +1,15 @@
 ﻿using Asas.Core.Modularity;
 using Asas.Identity.Api;
+using Asas.Identity.Infrastructure;
 using Asas.Messaging.DI;
+using Asas.Tenancy.Api;
 using AsasKit.Infrastructure.Data;
-using AsasKit.Modules.Identity;
 
 namespace AsasKit.Api
 {
     [DependsOn(
-    typeof(AsasIdentityApiModule)
+    typeof(AsasIdentityApiModule),
+        typeof(AsasTenancyApiModule)
     )]
     public class AsasKitModule : AsasModule
     {

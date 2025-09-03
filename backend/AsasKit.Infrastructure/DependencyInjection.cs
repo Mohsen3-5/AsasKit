@@ -49,12 +49,11 @@ public static class DependencyInjection
 
                 default:
                     throw new InvalidOperationException($"Unknown Data:Provider '{opts.Provider}'. Use Postgres | SqlServer | Sqlite.");
-            }
+            }      
         });
 
 
         // Repositories + UoW
-        services.AddScoped<ITenantRepository, TenantRepository>();
         services.AddScoped<IMembershipRepository, MembershipRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

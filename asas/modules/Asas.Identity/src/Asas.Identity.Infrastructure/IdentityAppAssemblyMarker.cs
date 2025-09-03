@@ -1,3 +1,3 @@
 ﻿// AsasKit.Modules.Identity.Application
-namespace AsasKit.Modules.Identity;
+namespace Asas.Identity.Infrastructure;
 public sealed class IdentityAppAssemblyMarker { }
