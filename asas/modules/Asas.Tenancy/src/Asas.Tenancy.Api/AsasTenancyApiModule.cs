@@ -1,4 +1,7 @@
-﻿using Asas.Tenancy.Infrastructure;
+﻿using Asas.Tenancy.Application;
+using Asas.Tenancy.Contracts;
+using Asas.Tenancy.Infrastructure;
+using Asas.Tenancy.Infrastructure.EF;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +12,8 @@ public class AsasTenancyApiModule : AsasModule
 {
     public override void ConfigureServices(IServiceCollection services, IConfiguration cfg)
     {
+        var provider = cfg["Data:Provider"] ?? "sqlserver";
+        var cs = cfg.GetConnectionString("Default");
         // Tenancy — code-only config (no AddRange on IList)
         services.AddTenancyModule(
             runtime: o =>
@@ -30,13 +35,19 @@ public class AsasTenancyApiModule : AsasModule
                 o.ExcludeNamespaces.Add("Microsoft.AspNetCore.Identity");
             });
 
-        services.AddTenantedDbContext<AppDbContext>(cfg); // <-- replace with your actual DbContext type
+        services.AddTenantedDbContext<TenancyDbContext>(cfg, cs, provider); // <-- replace with your actual DbContext type
+        services.AddOptions<TenancyModelOptions>();
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentTenant, HttpCurrentTenant>();
+        services.AddScoped<ITenantStore, EfTenantStore>();
+
 
     }
 
     public override void OnApplicationInitialization(IApplicationBuilder app)
     {
         app.UseTenancy(); // after UseAuthentication() if you resolve from claims
+        app.UseMiddleware<TenantResolutionMiddleware>();
         app.ApplicationServices.GetRequiredService<ILogger<AsasTenancyApiModule>>()
            .LogInformation("Tenancy initialized.");
     }

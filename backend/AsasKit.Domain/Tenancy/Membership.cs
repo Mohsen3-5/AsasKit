@@ -3,7 +3,6 @@
 using AsasKit.Domain.Common.Entity;
 
 namespace AsasKit.Domain.Tenancy;
-using AsasKit.Domain.Common;
 
 public sealed class Membership : Entity<Guid>
 {

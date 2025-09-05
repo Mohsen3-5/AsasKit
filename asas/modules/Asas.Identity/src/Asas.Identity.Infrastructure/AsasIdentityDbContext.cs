@@ -6,10 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Asas.Identity.Infrastructure;
 
 // Generic base so hosts can plug a derived user
-public class AsasIdentityDbContext<TUser> : IdentityDbContext<TUser, IdentityRole<Guid>, Guid>
-    where TUser : AsasUser
+public class AsasIdentityDbContext : AsasIdentityDbContextBase<AsasUser>
 {
-    public AsasIdentityDbContext(DbContextOptions options) : base(options) { }
+    public AsasIdentityDbContext(DbContextOptions<AsasIdentityDbContext> options) : base(options) { }
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder b)

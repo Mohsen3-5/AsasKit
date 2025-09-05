@@ -9,7 +9,7 @@ namespace AsasKit.Api
 {
     [DependsOn(
     typeof(AsasIdentityApiModule),
-        typeof(AsasTenancyApiModule)
+    typeof(AsasTenancyApiModule)
     )]
     public class AsasKitModule : AsasModule
     {

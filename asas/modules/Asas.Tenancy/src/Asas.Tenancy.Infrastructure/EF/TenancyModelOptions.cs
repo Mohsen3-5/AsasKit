@@ -1,4 +1,4 @@
-﻿namespace Asas.Tenancy.Infrastructure.Ef;
+﻿namespace Asas.Tenancy.Infrastructure.EF;
 
 public sealed class TenancyModelOptions
 {

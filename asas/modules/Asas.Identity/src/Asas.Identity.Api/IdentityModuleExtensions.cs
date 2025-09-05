@@ -35,7 +35,7 @@ public static class IdentityModuleExtensions
         string? connectionString = null,
         string provider = "sqlserver")
     {
-        services.AddIdentityModule<AsasUser, AsasIdentityDbContext<AsasUser>>(cfg, connectionString, provider);
+        services.AddIdentityModule<AsasUser, AsasIdentityDbContext>(cfg, connectionString, provider);
 
         // Current user plumbing
         services.TryAddScoped<ICurrentPrincipalAccessor, HttpCurrentPrincipalAccessor>();
@@ -62,7 +62,7 @@ public static class IdentityModuleExtensions
         string? connectionString = null,
         string provider = "sqlserver")
         where TUser : AsasUser, new()
-        where TContext : AsasIdentityDbContext<TUser>
+        where TContext : AsasIdentityDbContext
     {
         // ----- Connection string -----
         var cs = connectionString ?? cfg.GetConnectionString("Default");

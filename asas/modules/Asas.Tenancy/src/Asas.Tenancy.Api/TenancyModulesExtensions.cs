@@ -1,5 +1,5 @@
 ﻿using Asas.Tenancy.Contracts;
-using Asas.Tenancy.Infrastructure.Ef;
+using Asas.Tenancy.Infrastructure.EF;
 using Asas.Tenancy.Infrastructure.Runtime;
 using Asas.Tenancy.Infrastructure.Runtime.Resolvers;
 using Microsoft.AspNetCore.Builder;
@@ -43,7 +43,7 @@ public static class TenancyModulesExtensions
     }
 
     public static IApplicationBuilder UseTenancy(this IApplicationBuilder app)
-        => app.UseMiddleware<TenantResolutionMiddleware>();
+        => app.UseMiddleware<Infrastructure.EF.TenantResolutionMiddleware>();
 
     // Call inside AddDbContext((sp,o) => o.EnableRowLevelMultitenancy(sp))
     public static DbContextOptionsBuilder EnableRowLevelMultitenancy(this DbContextOptionsBuilder o, IServiceProvider sp)

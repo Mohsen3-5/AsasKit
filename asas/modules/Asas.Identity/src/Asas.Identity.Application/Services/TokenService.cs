@@ -16,14 +16,14 @@ namespace Asas.Identity.Application.Services;
 
 public sealed class TokenService : ITokenService
 {
-    private readonly AsasIdentityDbContext<AsasUser> _db;
+    private readonly AsasIdentityDbContext _db;
     private readonly UserManager<AsasUser> _userManager;
     private readonly IOptions<JwtOptions> _jwtOptions;
     // If you have it registered, swap the null helpers to use it.
     private readonly IHttpContextAccessor? _http;
 
     public TokenService(
-        AsasIdentityDbContext<AsasUser> db,
+        AsasIdentityDbContext db,
         IOptions<JwtOptions> jwtOptions,
          UserManager<AsasUser> userManager,
         IHttpContextAccessor? http = null)

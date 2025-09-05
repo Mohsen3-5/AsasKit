@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using Asas.Tenancy.Infrastructure.Runtime;
 
-namespace Asas.Tenancy.Infrastructure.Ef;
+namespace Asas.Tenancy.Infrastructure.EF;
 
 public sealed class TenantSaveChangesInterceptor : SaveChangesInterceptor
 {

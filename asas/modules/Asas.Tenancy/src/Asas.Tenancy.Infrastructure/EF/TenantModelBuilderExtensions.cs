@@ -1,56 +1,76 @@
 ﻿using System.Linq.Expressions;
-using System.Reflection;
+using Asas.Tenancy.Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Asas.Tenancy.Infrastructure.Runtime;
+using Microsoft.Extensions.Logging;
 
-namespace Asas.Tenancy.Infrastructure.Ef;
+namespace Asas.Tenancy.Infrastructure.EF;
 
 internal static class TenantModelBuilderExtensions
 {
-    public static void ApplyTenancy(this ModelBuilder b, TenancyModelOptions opt)
+    public static int ApplyTenancy(
+        this ModelBuilder b,
+        DbContext ctx,
+        TenancyModelOptions opt,
+        Func<string?> tenantAccessor,
+        ILogger? log = null)
     {
-        var efProp = typeof(EF).GetMethod(nameof(EF.Property), BindingFlags.Public | BindingFlags.Static)!;
-        var efPropString = efProp.MakeGenericMethod(typeof(string));
-        var ambientProp = typeof(TenancyAmbient).GetProperty(nameof(TenancyAmbient.CurrentTenantId), BindingFlags.Static | BindingFlags.Public)!;
+        var propName = opt.TenantIdPropertyName;
+        var count = 0;
 
-        foreach (var entity in b.Model.GetEntityTypes())
+        foreach (var et in b.Model.GetEntityTypes())
         {
-            var clr = entity.ClrType;
-            if (!ShouldScope(clr, opt)) continue;
+            var clr = et.ClrType;
+            if (!IsTenantScoped(clr, opt)) { log?.LogTrace("Tenancy: skip {Entity} (excluded)", clr.Name); continue; }
 
-            // Ensure TenantId property exists (shadow if needed)
-            var prop = entity.FindProperty(opt.TenantIdPropertyName) ?? entity.AddProperty(opt.TenantIdPropertyName, typeof(string));
-            prop.IsNullable = false;
-            prop.SetMaxLength(opt.TenantIdMaxLength);
-            entity.AddIndex(prop);
+            var p = et.FindProperty(propName);
+            if (p is null || p.ClrType != typeof(string))
+            {
+                log?.LogTrace("Tenancy: skip {Entity} (no string {Prop})", clr.Name, propName);
+                continue;
+            }
 
-            // e => TenancyAmbient.CurrentTenantId == null || EF.Property<string>(e,"TenantId") == TenancyAmbient.CurrentTenantId
+            b.Entity(clr).Property<string>(propName).HasMaxLength(opt.TenantIdMaxLength);
+            b.Entity(clr).HasIndex(propName);
+
             var param = Expression.Parameter(clr, "e");
-            var tenantIdAccess = Expression.Call(efPropString, param, Expression.Constant(opt.TenantIdPropertyName));
-            var ambient = Expression.Property(null, ambientProp);
-            var isNull = Expression.Equal(ambient, Expression.Constant(null, typeof(string)));
-            var equals = Expression.Equal(tenantIdAccess, ambient);
-            var body = Expression.OrElse(isNull, equals);
+            var prop = Expression.Call(
+              typeof(Microsoft.EntityFrameworkCore.EF),
+              nameof(Microsoft.EntityFrameworkCore.EF.Property),
+              new[] { typeof(string) },
+              param,
+              Expression.Constant(propName));
+
+            var tenantIdGetter = Expression.Property(
+                Expression.Constant(new ContextTenantAccessor(ctx, tenantAccessor)),
+                nameof(ContextTenantAccessor.TenantId));
+
+            var body = Expression.Equal(prop, tenantIdGetter);
             var lambda = Expression.Lambda(body, param);
 
-            entity.SetQueryFilter(lambda);
+            b.Entity(clr).HasQueryFilter(lambda);
+            count++;
+            log?.LogDebug("Tenancy: applied filter to {Entity}", clr.Name);
         }
+        return count;
     }
 
-    internal static bool ShouldScope(Type clr, TenancyModelOptions opt)
+    private static bool IsTenantScoped(Type t, TenancyModelOptions opt)
     {
-        if (opt.IsTenantScoped is not null) return opt.IsTenantScoped(clr);
+        if (opt.IsTenantScoped is not null) return opt.IsTenantScoped(t);
 
-        bool excludedNs = opt.ExcludeNamespaces.Any(ns => clr.Namespace?.StartsWith(ns, StringComparison.Ordinal) == true);
-        if (excludedNs) return false;
+        var ns = t.Namespace ?? "";
+        if (opt.ExcludeNamespaces.Any(ns.StartsWith)) return false;
+        if (opt.IncludeTypes.Contains(t)) return true;
+        if (opt.ExcludeTypes.Contains(t)) return false;
 
-        bool includedNs = opt.IncludeNamespaces.Count == 0 || opt.IncludeNamespaces.Any(ns => clr.Namespace?.StartsWith(ns, StringComparison.Ordinal) == true);
-        if (!includedNs) return false;
+        return opt.ScopeAllByDefault && (opt.IncludeNamespaces.Count == 0 || opt.IncludeNamespaces.Any(ns.StartsWith));
+    }
 
-        if (opt.ExcludeTypes.Contains(clr)) return false;
-        if (opt.IncludeTypes.Contains(clr)) return true;
-
-        return opt.ScopeAllByDefault;
+    private sealed class ContextTenantAccessor
+    {
+        private readonly DbContext _ctx;
+        private readonly Func<string?> _get;
+        public ContextTenantAccessor(DbContext ctx, Func<string?> get) { _ctx = ctx; _get = get; }
+        public string? TenantId => _get(); // evaluated per query execution
     }
 }
