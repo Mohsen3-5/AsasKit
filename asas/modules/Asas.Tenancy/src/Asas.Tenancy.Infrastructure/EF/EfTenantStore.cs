@@ -25,7 +25,7 @@ public sealed class EfTenantStore : ITenantStore
             .Where(t => t.Host == host && t.IsActive)
             .Select(t => new TenantDto(t.Identifier, t.Name))
             .FirstOrDefaultAsync(ct);
-}
+
 
     public async Task<TenantDto?> FindByIdAsync(Guid id, CancellationToken ct = default)
         => await _db.Set<Tenant>()
