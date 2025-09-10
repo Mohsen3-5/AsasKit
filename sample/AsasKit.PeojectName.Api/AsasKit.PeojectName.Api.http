@@ -1,0 +1,6 @@
+@AsasKit.PeojectName.Api_HostAddress = http://localhost:5188
+
+GET {{AsasKit.PeojectName.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

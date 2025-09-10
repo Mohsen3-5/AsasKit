@@ -15,9 +15,6 @@ public class AsasIdentityApiModule : AsasModule
            GetRequiredService<ILogger<AsasIdentityApiModule>>();
         var provider = cfg["Data:Provider"] ?? "sqlserver";
         var cs = cfg.GetConnectionString("Default");
-        logger.LogInformation("Identity API Module initialized successfully");
-        logger.LogInformation("Using {Provider} database provider.", provider);
-        logger.LogInformation("Using connection string: {ConnectionString}", cs);
         services.AddIdentityModule(cfg, cs, provider); 
     }
 

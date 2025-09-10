@@ -22,6 +22,7 @@ namespace AsasKit.ProjectName.Api.modularity
             // host-level stuff (Swagger, CORS, etc.)
             services.AddControllers();
             services.AddHttpContextAccessor();
+            services.AddOpenApi();
 
             services.AddAsasKitMessaging(
                 typeof(IdentityAppAssemblyMarker).Assembly,

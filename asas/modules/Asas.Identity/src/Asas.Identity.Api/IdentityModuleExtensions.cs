@@ -66,11 +66,7 @@ public static class IdentityModuleExtensions
         where TContext : AsasIdentityDbContext
     {
         using var sp = services.BuildServiceProvider();
-        var logger = sp.GetRequiredService<ILoggerFactory>()
-                .CreateLogger("IdentityModule");
-        logger.LogInformation("Starting IdentityModule setup for provider {Provider}", provider);
-        logger.LogInformation("Starting IdentityModule setup for connectionString {connectionString}", connectionString);
-        logger.LogInformation("Starting IdentityModule setup for default connectionString {connectionString}", cfg.GetConnectionString("Default"));
+
         // ----- Connection string -----
         var cs = connectionString ?? cfg.GetConnectionString("Default");
         if (string.IsNullOrWhiteSpace(cs))
@@ -122,7 +118,6 @@ public static class IdentityModuleExtensions
         var jwtSection = cfg.GetSection("Auth:Jwt");
         if (!jwtSection.Exists())
             jwtSection = cfg.GetSection("Jwt");
-        logger.LogInformation("Starting IdentityModule setup for JwtSection {jwtSection}", jwtSection);
 
         services.Configure<JwtOptions>(jwtSection);
         var jwt = jwtSection.Get<JwtOptions>() ?? new();

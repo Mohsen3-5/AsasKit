@@ -1,7 +1,9 @@
 ﻿
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 namespace Asas.Tenancy.Infrastructure.EF;
 public sealed class TenantResolutionMiddleware
 {
@@ -12,6 +14,7 @@ public sealed class TenantResolutionMiddleware
 
     public async Task Invoke(HttpContext ctx, ITenantStore store)
     {
+
         // TODO: support subdomain resolution strategie;
         var host = ctx.Request.Host.Host;
         var fromHeader = ctx.Request.Headers["X-Tenant-Id"].FirstOrDefault();
@@ -56,4 +59,5 @@ public sealed class TenantResolutionMiddleware
         _log.LogInformation("Tenancy: resolved & verified tenant '{TenantId}' ({Name})", tenant.Id, tenant.Name);
         await _next(ctx);
     }
+
 }
