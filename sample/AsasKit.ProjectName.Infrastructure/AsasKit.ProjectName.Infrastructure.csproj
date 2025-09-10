@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\kit\src\Asas.Core\Asas.Core.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Ardalis.Specification" Version="9.3.1" />
-  </ItemGroup>
-
 </Project>

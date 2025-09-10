@@ -1,5 +1,4 @@
-﻿using Asas.Messaging.Domain;
-
+﻿
 namespace Asas.Core.Domain;
 public abstract class AggregateRoot<TId>
 {

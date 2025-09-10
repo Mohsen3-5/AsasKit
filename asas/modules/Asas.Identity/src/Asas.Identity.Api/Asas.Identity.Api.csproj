@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Asas.Messaging\Asas.Messaging.csproj" />
     <ProjectReference Include="..\..\..\..\kit\src\Asas.Core\Asas.Core.csproj" />
 	<ProjectReference Include="..\Asas.Identity.Application\Asas.Identity.Application.csproj" />
     <ProjectReference Include="..\Asas.Identity.Domain\Asas.Identity.Domain.csproj" />
