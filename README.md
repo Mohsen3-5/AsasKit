@@ -48,5 +48,13 @@ Think of it as your **starter kit for enterprise-grade applications**, with a cl
    cd AsasKit
 
 
+##🤝 Contributing
 
-Do you want me to also add **badges (NuGet, build status, license, etc.)** at the top to make it look more professional and GitHub-ready?
+** Contributions are welcome!** 
+Feel free to submit pull requests for bug fixes, improvements, or new modules.
+
+## 📜 License
+
+** This project is licensed under the MIT License.** 
+See the LICENSE
+ file for more details.
