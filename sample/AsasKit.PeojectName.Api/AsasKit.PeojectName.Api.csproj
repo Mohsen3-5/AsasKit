@@ -12,6 +12,7 @@
 	  <PackageReference Include="Asas.Tenancy.Api" Version="1.4.3"></PackageReference>
 	  <PackageReference Include="Asas.Permission.Api" Version="1.4.3"></PackageReference>
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4"></PackageReference>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8" />
   </ItemGroup>
 
 </Project>
