@@ -1,7 +1,7 @@
 ﻿
 using Asas.Permission.Domain.Entity;
-
 using Asas.Permission.Contracts;
+using Asas.Permission.Infrastructure;
 namespace Asas.Permission.Application
 {
     public sealed class PermissionDefinitionStore : IPermissionDefinitionStore

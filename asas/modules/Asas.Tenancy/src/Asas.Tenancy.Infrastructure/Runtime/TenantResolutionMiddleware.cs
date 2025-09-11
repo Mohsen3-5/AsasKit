@@ -12,7 +12,7 @@ public sealed class TenantResolutionMiddleware(RequestDelegate next, ITenantReso
         {
             var rr = await resolver.ResolveAsync(context.RequestAborted);
             var id = rr.Id ?? rr.Slug; // we filter by Id; fall back to slug
-            TenantInfo? tenant = string.IsNullOrWhiteSpace(id) ? null : new TenantInfo { Id = id!, Slug = rr.Slug };
+            TenantInfo? tenant = string.IsNullOrWhiteSpace(id) ? null : new TenantInfo { Id = Guid.Parse(id)!, Slug = rr.Slug };
 
             TenantContextHolder.Current = new TenantContext(tenant);
 

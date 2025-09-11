@@ -20,7 +20,7 @@ public sealed class TenantSaveChangesInterceptor : SaveChangesInterceptor
     {
         if (ctx is null) return;
         var tid = TenancyAmbient.CurrentTenantId;
-        if (string.IsNullOrWhiteSpace(tid)) return;
+        if (tid is null) return;
 
         var propName = _opt.TenantIdPropertyName;
         foreach (var entry in ctx.ChangeTracker.Entries())

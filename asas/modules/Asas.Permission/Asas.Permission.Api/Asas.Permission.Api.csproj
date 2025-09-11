@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\kit\src\Asas.Core\Asas.Core.csproj" />
+    <ProjectReference Include="..\Asas.Permission.Infrastructure\Asas.Permission.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Asas.Permission.Contracts\Asas.Permission.Contracts.csproj" />
+	  <ProjectReference Include="..\Asas.Permission.Application\Asas.Permission.Application.csproj" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8" />
+  </ItemGroup>
+
 </Project>

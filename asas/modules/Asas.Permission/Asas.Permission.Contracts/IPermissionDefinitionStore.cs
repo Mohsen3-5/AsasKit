@@ -1,4 +1,5 @@
-﻿using Asas.Permission.Domain.Entity;
+﻿
+using Asas.Permission.Domain.Entity;
 
 namespace Asas.Permission.Contracts
 {

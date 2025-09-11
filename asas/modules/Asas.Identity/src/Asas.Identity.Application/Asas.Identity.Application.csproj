@@ -11,4 +11,9 @@
 	<ProjectReference Include="..\Asas.Identity.Infrastructure\Asas.Identity.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+  </ItemGroup>
+
 </Project>

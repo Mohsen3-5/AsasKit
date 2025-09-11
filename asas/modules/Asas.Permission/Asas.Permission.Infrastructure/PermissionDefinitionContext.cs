@@ -1,6 +1,5 @@
-﻿
-using Asas.Permission.Domain.Entity;
-namespace Asas.Permission.Application
+﻿using Asas.Permission.Domain.Entity;
+namespace Asas.Permission.Infrastructure
 {
     public sealed class PermissionDefinitionContext
     {

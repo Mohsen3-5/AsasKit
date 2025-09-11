@@ -7,7 +7,7 @@ namespace Asas.Permission.Infrastructure
     {
         public PermissionDbContext(DbContextOptions<PermissionDbContext> options) : base(options) { }
 
-        public DbSet<AsasPermission> Permissions => Set<AsasPermission>();
+        public DbSet<AsasPermission> AsasPermission => Set<AsasPermission>();
         public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
         public DbSet<UserPermissionOverride> UserPermissionOverrides => Set<UserPermissionOverride>();
 
@@ -17,8 +17,9 @@ namespace Asas.Permission.Infrastructure
 
             b.Entity<AsasPermission>(e =>
             {
-                e.ToTable("Permissions");
+                e.ToTable("AsasPermissions");
                 e.HasKey(x => x.Id);
+                e.Property(x => x.Id).ValueGeneratedOnAdd();
                 e.HasIndex(x => new { x.TenantId, x.Name }).IsUnique();
                 e.Property(x => x.Name).HasMaxLength(256).IsRequired();
                 e.Property(x => x.Group).HasMaxLength(128);
@@ -28,6 +29,7 @@ namespace Asas.Permission.Infrastructure
             {
                 e.ToTable("RolePermissions");
                 e.HasKey(x => x.Id);
+                e.Property(x => x.Id).ValueGeneratedOnAdd(); // Guid generated client-side by EF
                 e.HasIndex(x => new { x.TenantId, x.RoleId, x.PermissionName }).IsUnique();
                 e.Property(x => x.PermissionName).HasMaxLength(256).IsRequired();
             });
@@ -36,6 +38,7 @@ namespace Asas.Permission.Infrastructure
             {
                 e.ToTable("UserPermissionOverrides");
                 e.HasKey(x => x.Id);
+                e.Property(x => x.Id).ValueGeneratedOnAdd(); // Guid generated client-side by EF
                 e.HasIndex(x => new { x.TenantId, x.UserId, x.PermissionName }).IsUnique();
                 e.Property(x => x.PermissionName).HasMaxLength(256).IsRequired();
             });

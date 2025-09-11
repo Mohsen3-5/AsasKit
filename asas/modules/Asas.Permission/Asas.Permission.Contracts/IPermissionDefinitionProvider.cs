@@ -1,4 +1,5 @@
-﻿using Asas.Permission.Application;
+﻿using Asas.Permission.Infrastructure;
+
 namespace Asas.Permission.Contracts
 {
     public interface IPermissionDefinitionProvider

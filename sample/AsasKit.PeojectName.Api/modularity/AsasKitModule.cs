@@ -2,6 +2,7 @@
 using Asas.Identity.Api;
 using Asas.Identity.Infrastructure;
 using Asas.Messaging.DI;
+using Asas.Permission.Api;
 using Asas.Tenancy.Api;
 using Asas.Tenancy.Contracts;
 using Microsoft.AspNetCore.Builder;
@@ -13,7 +14,8 @@ namespace AsasKit.ProjectName.Api.modularity
 {
     [DependsOn(
     typeof(AsasIdentityApiModule),
-    typeof(AsasTenancyApiModule)
+    typeof(AsasTenancyApiModule),
+    typeof(AsasPermissionApiModule)
     )]
     public class AsasKitModule : AsasModule
     {

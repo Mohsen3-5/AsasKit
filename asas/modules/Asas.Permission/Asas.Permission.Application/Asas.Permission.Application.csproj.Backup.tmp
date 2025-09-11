@@ -8,7 +8,5 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Asas.Permission.Domain\Asas.Permission.Domain.csproj" />
-		<ProjectReference Include="..\Asas.Permission.Infrastructure\Asas.Permission.Infrastructure.csproj" />
-
 	</ItemGroup>
 </Project>

@@ -153,6 +153,7 @@ public static class IdentityModuleExtensions
         services.TryAddScoped<ICurrentPrincipalAccessor, HttpCurrentPrincipalAccessor>();
         services.TryAddScoped<ICurrentUser, CurrentUser>();
         services.AddScoped<IUserDirectory, UserDirectory>();
+        services.AddScoped<IUserRoleService, UserRoleService>();
 
         // Token service
         services.TryAddScoped<ITokenService, TokenService>();
