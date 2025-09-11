@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\kit\src\Asas.Core\Asas.Core.csproj" />
+  </ItemGroup>
+
 </Project>
