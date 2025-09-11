@@ -50,11 +50,11 @@ Think of it as your **starter kit for enterprise-grade applications**, with a cl
 
 ##🤝 Contributing
 
-** Contributions are welcome!** 
+- **Contributions are welcome!** 
 Feel free to submit pull requests for bug fixes, improvements, or new modules.
 
 ## 📜 License
 
-** This project is licensed under the MIT License.** 
+- **This project is licensed under the MIT License.** 
 See the LICENSE
  file for more details.
