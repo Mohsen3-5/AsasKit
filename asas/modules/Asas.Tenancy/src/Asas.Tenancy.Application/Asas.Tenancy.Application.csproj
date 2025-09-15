@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Asas.Tenancy.Contracts\Asas.Tenancy.Contracts.csproj" />
     <ProjectReference Include="..\Asas.Tenancy.Domain\Asas.Tenancy.Domain.csproj" />
+    <ProjectReference Include="..\Asas.Tenancy.Infrastructure\Asas.Tenancy.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

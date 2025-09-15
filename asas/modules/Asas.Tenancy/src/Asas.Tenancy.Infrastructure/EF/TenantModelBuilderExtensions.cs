@@ -11,7 +11,7 @@ internal static class TenantModelBuilderExtensions
         this ModelBuilder b,
         DbContext ctx,
         TenancyModelOptions opt,
-        Func<string?> tenantAccessor,
+        Func<Guid?> tenantAccessor,
         ILogger? log = null)
     {
         var propName = opt.TenantIdPropertyName;
@@ -69,8 +69,8 @@ internal static class TenantModelBuilderExtensions
     private sealed class ContextTenantAccessor
     {
         private readonly DbContext _ctx;
-        private readonly Func<string?> _get;
-        public ContextTenantAccessor(DbContext ctx, Func<string?> get) { _ctx = ctx; _get = get; }
-        public string? TenantId => _get(); // evaluated per query execution
+        private readonly Func<Guid?> _get;
+        public ContextTenantAccessor(DbContext ctx, Func<Guid?> get) { _ctx = ctx; _get = get; }
+        public Guid? TenantId => _get(); // evaluated per query execution
     }
 }

@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\kit\src\Asas.Core\Asas.Core.csproj" />
+    <ProjectReference Include="..\..\..\Asas.Tenancy\src\Asas.Tenancy.Contracts\Asas.Tenancy.Contracts.csproj" />
     <ProjectReference Include="..\Asas.Identity.Domain\Asas.Identity.Domain.csproj" />
 	<ProjectReference Include="..\Asas.Identity.Infrastructure\Asas.Identity.Infrastructure.csproj" />
   </ItemGroup>

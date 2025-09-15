@@ -1,14 +1,17 @@
 ﻿using Asas.Identity.Application.Contracts;
 using Asas.Identity.Domain.Entities;
+using Asas.Tenancy.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 public sealed class AuthService(
     UserManager<AsasUser> users,
-    ITokenService refreshSvc) : IAuthService
+       ICurrentTenant currentTenant,
+       ITokenService refreshSvc) : IAuthService
 {
     public async Task<AuthResult> RegisterAsync(RegisterRequest r, CancellationToken ct = default)
     {
-        var u = new AsasUser { Email = r.Email, UserName = r.Email, TenantId = r.TenantId };
+        var u = new AsasUser { Email = r.Email, UserName = r.Email, TenantId = currentTenant.Id };
         var res = await users.CreateAsync(u, r.Password);
         if (!res.Succeeded)
             throw new InvalidOperationException(string.Join("; ", res.Errors.Select(e => e.Description)));

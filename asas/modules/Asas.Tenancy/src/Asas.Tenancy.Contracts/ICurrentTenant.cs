@@ -1,6 +1,6 @@
 ﻿namespace Asas.Tenancy.Contracts;
 public interface ICurrentTenant
 {
-    string? Id { get; }
+    Guid Id { get; }
     bool IsSet { get; }
 }

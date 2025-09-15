@@ -12,6 +12,7 @@ public interface ITenantStore
 {
     Task<TenantDto?> FindByIdAsync(Guid id, CancellationToken ct = default);
     Task<TenantDto?> FindByHostAsync(string host, CancellationToken ct = default);
+    TenantDto? FindByHost(string host);
 }
 
 public sealed class EfTenantStore : ITenantStore
@@ -23,16 +24,22 @@ public sealed class EfTenantStore : ITenantStore
     => await _db.Set<Tenant>()
             .AsNoTracking()
             .Where(t => t.Host == host && t.IsActive)
-            .Select(t => new TenantDto(t.Identifier, t.Name))
+            .Select(t => new TenantDto(t.Id, t.Name))
             .FirstOrDefaultAsync(ct);
 
+    public TenantDto? FindByHost(string host)
+=>  _db.Set<Tenant>()
+        .AsNoTracking()
+        .Where(t => t.Host == host && t.IsActive)
+        .Select(t => new TenantDto(t.Id, t.Name))
+        .FirstOrDefault();
 
     public async Task<TenantDto?> FindByIdAsync(Guid id, CancellationToken ct = default)
         => await _db.Set<Tenant>()
             .AsNoTracking()
             .Where(t => t.Id == id && t.IsActive)
-            .Select(t => new TenantDto(t.Identifier, t.Name))
+            .Select(t => new TenantDto(t.Id, t.Name))
             .FirstOrDefaultAsync(ct);
 }
 
-public sealed record TenantDto(string Id, string Name);
+public sealed record TenantDto(Guid Id, string Name);

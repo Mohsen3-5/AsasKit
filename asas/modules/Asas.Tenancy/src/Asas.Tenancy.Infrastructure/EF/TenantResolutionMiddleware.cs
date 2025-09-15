@@ -15,18 +15,12 @@ public sealed class TenantResolutionMiddleware
 
         // TODO: support subdomain resolution strategie;
         var host = ctx.Request.Host.Host;
-        var fromHeader = ctx.Request.Headers["X-Tenant-Id"].FirstOrDefault();
+        _log.LogWarning("host : {host}", host);
 
         string? fromSub = null;
-        if (!string.IsNullOrWhiteSpace(host) &&
-            !host.Equals("localhost", StringComparison.OrdinalIgnoreCase) &&
-            !host.Equals("127.0.0.1") &&
-            host.Contains('.')) // real subdomain like foo.example.com
+        if (!string.IsNullOrWhiteSpace(host)) // real subdomain like foo.example.com
         {
             fromSub = host.Split('.')[0];
-        }else if (!string.IsNullOrWhiteSpace(fromHeader))
-        {
-            fromSub = fromHeader;
         }
         _log.LogWarning("sub : {fromSub}", fromSub);
 
@@ -35,8 +29,7 @@ public sealed class TenantResolutionMiddleware
         Guid guid;
         if (!string.IsNullOrWhiteSpace(fromSub))
             tenant = await store.FindByHostAsync(fromSub);
-        else if (!string.IsNullOrWhiteSpace(fromHeader) && Guid.TryParse(fromHeader, out guid))
-            tenant = await store.FindByIdAsync(guid);
+
         _log.LogWarning("Tenancy: {tenant}",
               tenant);
         if (tenant is null)

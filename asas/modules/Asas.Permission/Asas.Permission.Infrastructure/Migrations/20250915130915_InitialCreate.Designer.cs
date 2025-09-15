@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Asas.Permission.Infrastructure.Migrations
 {
     [DbContext(typeof(PermissionDbContext))]
-    [Migration("20250911134644_AddPermissionModule")]
-    partial class AddPermissionModule
+    [Migration("20250915130915_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

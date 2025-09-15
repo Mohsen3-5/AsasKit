@@ -38,7 +38,7 @@ public class AsasTenancyApiModule : AsasModule
         services.AddTenantedDbContext<TenancyDbContext>(cfg, cs, provider); // <-- replace with your actual DbContext type
         services.AddOptions<TenancyModelOptions>();
         services.AddHttpContextAccessor();
-        services.AddScoped<ICurrentTenant, HttpCurrentTenant>();
+        services.AddScoped<ICurrentTenant, HostCurrentTenant>();
         services.AddScoped<ITenantStore, EfTenantStore>();
 
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Asas.Permission.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddPermissionModule : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
