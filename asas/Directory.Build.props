@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <!-- Centralized Version Management -->
-    <AsasKitVersion>1.7.3</AsasKitVersion>
+    <AsasKitVersion>1.8.1</AsasKitVersion>
     
     <!-- Common Properties for all projects -->
     <TargetFramework>net9.0</TargetFramework>

@@ -4,6 +4,7 @@ using Asas.Tenancy.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Asas.Tenancy.Infrastructure.Migrations
 {
     [DbContext(typeof(TenancyDbContext))]
-    partial class TenancyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250916150908_editModuleName")]
+    partial class editModuleName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
