@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<PackageId>Asas.Infrastructure</PackageId>
+		<Description>ASP.NET Infrastructure integration (JWT, DI, middleware) for Asas Identity.</Description>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+	 <ProjectReference Include="..\Asas.Core\Asas.Core.csproj" />
+  </ItemGroup>
+
+</Project>

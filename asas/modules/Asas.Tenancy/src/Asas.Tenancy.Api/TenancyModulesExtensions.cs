@@ -1,4 +1,5 @@
-﻿using Asas.Tenancy.Contracts;
+﻿using Asas.Tenancy.Application;
+using Asas.Tenancy.Contracts;
 using Asas.Tenancy.Infrastructure.EF;
 using Asas.Tenancy.Infrastructure.Runtime;
 using Asas.Tenancy.Infrastructure.Runtime.Resolvers;
@@ -29,6 +30,7 @@ public static class TenancyModulesExtensions
         services.AddTransient<ClaimsTenantResolver>();
         services.AddTransient<SubdomainTenantResolver>();
         services.AddTransient<ITenantResolver, CompositeTenantResolver>();
+        services.AddHostedService<TenancySynchronizer>();
 
         // EF conventions
         services.Configure(model ?? (o =>

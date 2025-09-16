@@ -1,5 +1,6 @@
 ﻿// backend/Modules/Identity/AsasKit.Modules.Identity/IdentityModuleExtensions.cs
 using System.Text;
+using Asas.Identity.Application;
 using Asas.Identity.Application.Contracts;
 using Asas.Identity.Application.Services;
 using Asas.Identity.Domain;
@@ -42,6 +43,7 @@ public static class IdentityModuleExtensions
         services.TryAddScoped<ICurrentPrincipalAccessor, HttpCurrentPrincipalAccessor>();
         services.TryAddScoped<ICurrentUser, CurrentUser>();
         services.AddScoped<IUserDirectory, UserDirectory>();
+        services.AddHostedService<IdentitySynchronizer>();
 
         // Token service
         services.TryAddScoped<ITokenService, TokenService>();
