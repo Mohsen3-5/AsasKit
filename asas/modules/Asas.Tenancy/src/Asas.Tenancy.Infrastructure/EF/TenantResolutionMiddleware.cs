@@ -26,7 +26,6 @@ public sealed class TenantResolutionMiddleware
 
         // ignore "localhost" as tenant
         TenantDto? tenant = null;
-        Guid guid;
         if (!string.IsNullOrWhiteSpace(fromSub))
             tenant = await store.FindByHostAsync(fromSub);
 

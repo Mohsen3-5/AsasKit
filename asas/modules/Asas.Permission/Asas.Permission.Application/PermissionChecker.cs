@@ -15,7 +15,7 @@ namespace Asas.Permission.Application
         public PermissionChecker(PermissionDbContext db, IUserRoleService userRoles, IDistributedCache cache)
         { _db = db; _userRoles = userRoles; _cache = cache; }
 
-        public async Task<bool> IsGrantedAsync(Guid userId, string permission, Guid? tenantId, CancellationToken ct = default)
+        public async Task<bool> IsGrantedAsync(Guid userId, string permission, int? tenantId, CancellationToken ct = default)
         {
             var cacheKey = $"perm:{tenantId}:{userId}";
             var map = await _cache.GetAsync(cacheKey, ct) is { } bytes

@@ -53,8 +53,8 @@ namespace Asas.Permission.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");
@@ -90,8 +90,8 @@ namespace Asas.Permission.Infrastructure.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");
@@ -124,8 +124,8 @@ namespace Asas.Permission.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");

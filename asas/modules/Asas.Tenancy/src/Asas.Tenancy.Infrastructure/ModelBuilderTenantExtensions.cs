@@ -1,61 +1,33 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
+using Asas.Core.EF;
+using Asas.Tenancy.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using EFF = Microsoft.EntityFrameworkCore.EF;
 
 namespace Asas.Tenancy.Infrastructure;
 
 public static class ModelBuilderTenantExtensions
 {
-    public static void ApplyTenantQueryFilters(this ModelBuilder b, DbContext ctx, ILogger? logger, params Type[] except)
+    public static void ApplyTenantFilters(this ModelBuilder modelBuilder, ICurrentTenant tenant)
     {
-        var ctxType = ctx.GetType();
-        var currentTenantIdProp = ctxType.GetProperty(nameof(TenancyDbContext.CurrentTenantId))!;
-        var enabledProp = ctxType.GetProperty(nameof(TenancyDbContext.TenantFilterEnabled))!;
-        logger.LogInformation(
-                 "Tenant filter summary → applied: {CurrentTenantIdProp}",
-                 currentTenantIdProp);
-        foreach (var et in b.Model.GetEntityTypes())
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            var clr = et.ClrType;
-            if (clr is null || et.IsKeyless) continue;
-            if (except.Any(x => x.IsAssignableFrom(clr))) continue;
-
-            var tenantProp = clr.GetProperty("TenantId");
-            if (tenantProp is null) continue;
-
-            // e =>
-            var e = Expression.Parameter(clr, "e");
-            var eTenant = Expression.Property(e, tenantProp);
-
-            // ctx.CurrentTenantId / ctx.TenantFilterEnabled
-            var ctxConst = Expression.Constant(ctx);
-            var currentTenantId = Expression.Property(ctxConst, currentTenantIdProp);
-            var enabledExpr = Expression.Property(ctxConst, enabledProp);
-            var notEnabled = Expression.Not(enabledExpr);
-
-            Expression body;
-            if (tenantProp.PropertyType == typeof(Guid))
+            if (typeof(Entity).IsAssignableFrom(entityType.ClrType))
             {
-                var eq = Expression.Equal(eTenant, currentTenantId);
-                body = Expression.OrElse(notEnabled, eq);
-            }
-            else if (tenantProp.PropertyType == typeof(Guid?))
-            {
-                var nullGuid = Expression.Constant(null, typeof(Guid?));
-                var isNull = Expression.Equal(eTenant, nullGuid);
-                var asNullable = Expression.Convert(currentTenantId, typeof(Guid?));
-                var eq = Expression.Equal(eTenant, asNullable);
-                body = Expression.OrElse(notEnabled, Expression.OrElse(isNull, eq));
-            }
-            else continue;
+                var method = typeof(ModelBuilderTenantExtensions)
+                    .GetMethod(nameof(SetTenantFilter), BindingFlags.NonPublic | BindingFlags.Static)!
+                    .MakeGenericMethod(entityType.ClrType);
 
-            var lambda = Expression.Lambda(
-                typeof(Func<,>).MakeGenericType(clr, typeof(bool)),
-                body, e);
-
-            b.Entity(clr).HasQueryFilter(lambda);
-            logger.LogInformation(
-    "Tenant filter summary → applied: ");
+                method.Invoke(null, new object[] { modelBuilder, tenant });
+            }
         }
     }
+
+    private static void SetTenantFilter<TEntity>(ModelBuilder modelBuilder, ICurrentTenant tenant)
+        where TEntity : Entity
+    {
+        modelBuilder.Entity<TEntity>().HasQueryFilter(e => e.TenantId == tenant.Id);
+    }
+
 }

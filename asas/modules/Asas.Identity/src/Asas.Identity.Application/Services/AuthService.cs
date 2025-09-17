@@ -41,7 +41,6 @@ public sealed class AuthService(
         // Delegate all token issuing to RefreshTokenService
         var (access, refresh, exp) = await refreshSvc.IssueAsync(
             u.Id,
-            u.TenantId,
             u.UserName ?? u.Email,
             roles,
             device,

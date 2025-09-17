@@ -9,34 +9,34 @@ namespace Asas.Identity.Infrastructure.Repo;
 
 public sealed class UserDirectory(UserManager<AsasUser> users) : IUserDirectory
 {
-    public async Task<UserView?> GetAsync(Guid id, Guid tenantId, CancellationToken ct = default)
+    public async Task<UserView?> GetAsync(Guid id, CancellationToken ct = default)
     {
         var u = await users.Users
             .AsNoTracking()
-            .Where(x => x.TenantId == tenantId && x.Id == id)
+            .Where(x => x.Id == id)
             .FirstOrDefaultAsync(ct);
 
         return u is null ? null : Map(u);
     }
 
-    public async Task<UserView?> FindByEmailAsync(string email, Guid tenantId, CancellationToken ct = default)
+    public async Task<UserView?> FindByEmailAsync(string email, CancellationToken ct = default)
     {
         var norm = users.NormalizeEmail(email);
         var u = await users.Users
             .AsNoTracking()
-            .Where(x => x.TenantId == tenantId && x.NormalizedEmail == norm)
+            .Where(x => x.NormalizedEmail == norm)
             .FirstOrDefaultAsync(ct);
 
         return u is null ? null : Map(u);
     }
 
     public async Task<IReadOnlyList<UserView>> SearchAsync(
-        string term, Guid tenantId, int take = 20, CancellationToken ct = default)
+        string term, int take = 20, CancellationToken ct = default)
     {
         term = term?.Trim() ?? string.Empty;
         take = take <= 0 ? 20 : take;
 
-        var q = users.Users.AsNoTracking().Where(x => x.TenantId == tenantId);
+        var q = users.Users.AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(term))
         {
@@ -56,7 +56,6 @@ public sealed class UserDirectory(UserManager<AsasUser> users) : IUserDirectory
         => new(
             u.Id,
             u.Email ?? string.Empty,
-            u.TenantId,
             TryGetOptionalString(u, "FullName"));
 
     private static string? TryGetOptionalString(object obj, string prop)

@@ -24,7 +24,7 @@ namespace Asas.Permission.Infrastructure.Migrations
                     CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    TenantId = table.Column<Guid>(type: "uuid", nullable: true)
+                    TenantId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -42,7 +42,7 @@ namespace Asas.Permission.Infrastructure.Migrations
                     CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    TenantId = table.Column<Guid>(type: "uuid", nullable: true)
+                    TenantId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,7 +60,7 @@ namespace Asas.Permission.Infrastructure.Migrations
                     CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    TenantId = table.Column<Guid>(type: "uuid", nullable: true)
+                    TenantId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {

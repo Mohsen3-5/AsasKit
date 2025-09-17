@@ -40,14 +40,13 @@ public sealed class TokenService : ITokenService
     /// </summary>
     public async Task<(string accessToken, string refreshToken, DateTime expiresAtUtc)> IssueAsync(
         Guid userId,
-        Guid tenantId,
         string? displayNameOrEmail,
         IEnumerable<string> roles,
         string? device,
         CancellationToken ct = default)
     {
         var now = DateTime.UtcNow;
-        var accessToken = CreateAccessToken(userId, tenantId, displayNameOrEmail, roles, now, out var accessExpUtc);
+        var accessToken = CreateAccessToken(userId, displayNameOrEmail, roles, now, out var accessExpUtc);
 
         var rawRefresh = CreateRandomToken();             // return to caller
         var refreshHash = Hash(rawRefresh);               // store only hash
@@ -56,7 +55,6 @@ public sealed class TokenService : ITokenService
         var rt = new RefreshToken
         {
             Id = Guid.NewGuid(),
-            TenantId = tenantId,
             UserId = userId,
             TokenHash = refreshHash,
             ExpiresAtUtc = refreshExp,
@@ -133,7 +131,6 @@ public sealed class TokenService : ITokenService
 
         var accessToken = CreateAccessToken(
             existing.UserId,
-            existing.TenantId,
             displayNameOrEmail ?? existing.UserId.ToString(),
             roles,
             now,
@@ -173,7 +170,6 @@ public sealed class TokenService : ITokenService
 
     private string CreateAccessToken(
         Guid userId,
-        Guid tenantId,
         string? displayNameOrEmail,
         IEnumerable<string> roles,
         DateTime now,
@@ -186,7 +182,6 @@ public sealed class TokenService : ITokenService
         {
             new(AsasClaimTypes.Sub, userId.ToString()),
             new(ClaimTypes.NameIdentifier, userId.ToString()),
-            new(AsasClaimTypes.TenantId, tenantId.ToString()),
             new(AsasClaimTypes.Email, displayNameOrEmail ?? string.Empty),
             new(AsasClaimTypes.PreferredUsername, displayNameOrEmail ?? string.Empty),
             new(AsasClaimTypes.Jti, Guid.NewGuid().ToString()),

@@ -16,5 +16,5 @@ public abstract class Entity
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAtUtc { get; set; }
     public DateTime? DeletedAtUtc { get; set; }
-    public Guid? TenantId { get; set; }
+    public int? TenantId { get; set; }
 }

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace Asas.Tenancy.Infrastructure.EF;
 public interface ITenantStore
 {
-    Task<TenantDto?> FindByIdAsync(Guid id, CancellationToken ct = default);
+    Task<TenantDto?> FindByIdAsync(int id, CancellationToken ct = default);
     Task<TenantDto?> FindByHostAsync(string host, CancellationToken ct = default);
     TenantDto? FindByHost(string host);
 }
@@ -34,7 +34,7 @@ public sealed class EfTenantStore : ITenantStore
         .Select(t => new TenantDto(t.Id, t.Name))
         .FirstOrDefault();
 
-    public async Task<TenantDto?> FindByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<TenantDto?> FindByIdAsync(int id, CancellationToken ct = default)
         => await _db.Set<Tenant>()
             .AsNoTracking()
             .Where(t => t.Id == id && t.IsActive)
@@ -42,4 +42,4 @@ public sealed class EfTenantStore : ITenantStore
             .FirstOrDefaultAsync(ct);
 }
 
-public sealed record TenantDto(Guid Id, string Name);
+public sealed record TenantDto(int Id, string Name);

@@ -8,5 +8,5 @@ namespace Asas.Identity.Application.Contracts;
 public interface IUserRoleService
 {
     // If roles are tenant-agnostic, ignore tenantId in the impl.
-    Task<IReadOnlyList<Guid>> GetRoleIdsAsync(Guid userId, Guid? tenantId = null, CancellationToken ct = default);
+    Task<IReadOnlyList<Guid>> GetRoleIdsAsync(Guid userId, int? tenantId = null, CancellationToken ct = default);
 }

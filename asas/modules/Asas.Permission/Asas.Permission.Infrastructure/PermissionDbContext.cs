@@ -1,11 +1,16 @@
 ﻿using Asas.Permission.Domain.Entity;
+using Asas.Tenancy.Contracts;
+using Asas.Tenancy.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asas.Permission.Infrastructure
 {
-    public class PermissionDbContext : DbContext
+    public class PermissionDbContext : BaseAsasDbContext<PermissionDbContext>
     {
-        public PermissionDbContext(DbContextOptions<PermissionDbContext> options) : base(options) { }
+        public PermissionDbContext(DbContextOptions<PermissionDbContext> options, ICurrentTenant tenant)
+        : base(options, tenant)
+        {
+        }
 
         public DbSet<AsasPermission> AsasPermission => Set<AsasPermission>();
         public DbSet<RolePermission> RolePermissions => Set<RolePermission>();

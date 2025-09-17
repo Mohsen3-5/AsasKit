@@ -5,7 +5,6 @@ public interface ITokenService
 {
     Task<(string accessToken, string refreshToken, DateTime expiresAtUtc)> IssueAsync(
         Guid userId,
-        Guid tenantId,
         string? displayNameOrEmail,          // used for the Name claim
         IEnumerable<string> roles,
         string? device,

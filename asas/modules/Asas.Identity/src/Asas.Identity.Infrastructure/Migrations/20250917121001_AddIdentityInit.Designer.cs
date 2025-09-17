@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Asas.Identity.Infrastructure.Migrations
 {
     [DbContext(typeof(AsasIdentityDbContext))]
-    [Migration("20250917082108_AddIdentityInit")]
+    [Migration("20250917121001_AddIdentityInit")]
     partial class AddIdentityInit
     {
         /// <inheritdoc />
@@ -74,8 +74,8 @@ namespace Asas.Identity.Infrastructure.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
