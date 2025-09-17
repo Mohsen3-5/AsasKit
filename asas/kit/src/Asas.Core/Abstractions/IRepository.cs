@@ -1,10 +1,17 @@
 ﻿using Asas.Core.EF;
+using Asas.Core.Paging;
 
 public interface IRepository<TEntity> where TEntity : Entity
 {
+    IQueryable<TEntity> Query();
+    TEntity? GetById(Guid id);
+    Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default);
     IReadOnlyList<TEntity> GetAll();
     Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken ct = default);
-
+    Task<PagedResponse<TEntity>> GetPagedAsync(
+    int pageNumber,
+    int pageSize,
+    CancellationToken ct = default);
     void Add(TEntity entity);
     Task AddAsync(TEntity entity, CancellationToken ct = default);
 

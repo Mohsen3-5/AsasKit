@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Asas.Core.EF;
 using Asas.Tenancy.Contracts;
+using Asas.Core.Exceptions;
+using Asas.Core.Paging;
 
 namespace Asas.Infrastructure.Repositories;
 
@@ -13,7 +15,21 @@ public class EfRepository<TEntity, TDbContext> : IRepository<TEntity>
 
     public EfRepository(TDbContext db, ICurrentTenant currentTenant) => (_db, _currentTenant) = (db, currentTenant);
 
+    public IQueryable<TEntity> Query() => _db.Set<TEntity>().AsQueryable();
+
+    public TEntity? GetById(Guid id) => _db.Set<TEntity>().Find(id);
+    public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default)
+        => await _db.Set<TEntity>().FindAsync(new object?[] { id }, ct);
     public IReadOnlyList<TEntity> GetAll() => _db.Set<TEntity>().ToList();
+
+    public async Task<PagedResponse<TEntity>> GetPagedAsync(
+    int pageNumber,
+    int pageSize,
+    CancellationToken ct = default)
+    {
+        var query = _db.Set<TEntity>();
+        return await query.ToPagedResponseAsync(pageNumber, pageSize, ct);
+    }
 
     public async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken ct = default)
         => await _db.Set<TEntity>().ToListAsync(ct);
