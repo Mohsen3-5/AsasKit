@@ -8,10 +8,7 @@ public interface IRepository<TEntity> where TEntity : Entity
     Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default);
     IReadOnlyList<TEntity> GetAll();
     Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken ct = default);
-    Task<PagedResponse<TEntity>> GetPagedAsync(
-    int pageNumber,
-    int pageSize,
-    CancellationToken ct = default);
+    Task<PagedResponse<TEntity>> GetPagedAsync(PagedRequest request, CancellationToken ct = default);
     void Add(TEntity entity);
     Task AddAsync(TEntity entity, CancellationToken ct = default);
 

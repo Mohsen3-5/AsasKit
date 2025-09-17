@@ -23,12 +23,11 @@ public class EfRepository<TEntity, TDbContext> : IRepository<TEntity>
     public IReadOnlyList<TEntity> GetAll() => _db.Set<TEntity>().ToList();
 
     public async Task<PagedResponse<TEntity>> GetPagedAsync(
-    int pageNumber,
-    int pageSize,
+    PagedRequest request,
     CancellationToken ct = default)
     {
         var query = _db.Set<TEntity>();
-        return await query.ToPagedResponseAsync(pageNumber, pageSize, ct);
+        return await query.ToPagedResponseAsync(request, ct);
     }
 
     public async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken ct = default)
