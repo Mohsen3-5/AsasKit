@@ -22,7 +22,7 @@ public sealed class TenancyDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder b)
     {
         base.OnModelCreating(b);
-        b.ApplyTenantQueryFilters(this, _log, except: [typeof(Tenant)]); // never filter the Tenants table
+        //b.ApplyTenantQueryFilters(this, _log, except: [typeof(Tenant)]); // never filter the Tenants table
 
         // Pull in any IEntityTypeConfiguration<T> you define in this assembly
         b.ApplyConfigurationsFromAssembly(typeof(TenancyDbContext).Assembly);
