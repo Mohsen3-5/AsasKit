@@ -20,24 +20,20 @@ public class EfRepository<TEntity, TDbContext> : IRepository<TEntity>
 
     public void Add(TEntity entity)
     {
-        ApplyTenant(entity);
         _db.Set<TEntity>().Add(entity);
     }
 
     public Task AddAsync(TEntity entity, CancellationToken ct = default)
     {
-        ApplyTenant(entity);
         return _db.Set<TEntity>().AddAsync(entity, ct).AsTask();
     }
     public void AddRange(IEnumerable<TEntity> entities)
     {
-        foreach (var e in entities) ApplyTenant(e!);
         _db.Set<TEntity>().AddRange(entities);
     }
 
     public Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken ct = default)
     {
-        foreach (var e in entities) ApplyTenant(e!);
         return _db.Set<TEntity>().AddRangeAsync(entities, ct);
     }
 
@@ -56,14 +52,5 @@ public class EfRepository<TEntity, TDbContext> : IRepository<TEntity>
     public int SaveChanges() => _db.SaveChanges();
 
     public Task<int> SaveChangesAsync(CancellationToken ct = default) => _db.SaveChangesAsync(ct);
-
-
-    private void ApplyTenant(object entity)
-    {
-        if (!_currentTenant.IsSet) return;
-
-        if (entity is Entity e && e.TenantId is null)
-            e.TenantId = _currentTenant.Id;
-    }
 
 }

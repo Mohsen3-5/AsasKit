@@ -2,7 +2,6 @@
 using Asas.Identity.Domain.Entities;
 using Asas.Tenancy.Contracts;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 public sealed class AuthService(
     UserManager<AsasUser> users,

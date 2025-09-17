@@ -38,7 +38,7 @@ public sealed class TenancyModelCustomizer : ModelCustomizer
     private sealed class NullCurrentTenant : ICurrentTenant
     {
         public static readonly NullCurrentTenant Instance = new();
-        public int Id =>0;
+        public int? Id => null;
         public bool IsSet => false;
 
     }

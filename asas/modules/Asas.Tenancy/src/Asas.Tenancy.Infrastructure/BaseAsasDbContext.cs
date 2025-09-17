@@ -41,7 +41,7 @@ public abstract class BaseAsasDbContext<TDbContext> : DbContext
     {
         foreach (var entry in ChangeTracker.Entries<Entity>())
         {
-            if (entry.State == EntityState.Added && entry.Entity.TenantId == 0 && _tenant.IsSet)
+            if (entry.State == EntityState.Added && entry.Entity.TenantId == null)
             {
                 entry.Entity.TenantId = _tenant.Id;
             }

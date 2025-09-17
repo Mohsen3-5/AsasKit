@@ -15,7 +15,7 @@ public sealed class HostCurrentTenant : ICurrentTenant
         _log = log;
     }
 
-    public int Id
+    public int? Id
     {
         get
         {
@@ -24,7 +24,7 @@ public sealed class HostCurrentTenant : ICurrentTenant
                 return i;
             }
 
-            return 0;
+            return null;
         }
     }
 
