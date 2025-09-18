@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Asas.Core.EF;
 using Asas.Tenancy.Contracts;
-using Asas.Core.Exceptions;
 using Asas.Core.Paging;
+using Asas.Core.EF;
 
 namespace Asas.Infrastructure.Repositories;
 

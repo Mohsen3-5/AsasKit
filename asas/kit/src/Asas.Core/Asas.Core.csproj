@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\modules\Asas.Tenancy\src\Asas.Tenancy.Contracts\Asas.Tenancy.Contracts.csproj" />
-    <ProjectReference Include="..\Asas.Messaging\Asas.Messaging.csproj" />
   </ItemGroup>
 
 </Project>
