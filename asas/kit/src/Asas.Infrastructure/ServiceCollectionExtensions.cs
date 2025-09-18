@@ -18,7 +18,7 @@ namespace Asas.Infrastructure.Repositories
             where TDbContext : DbContext
         {
             var entityBase = typeof(Entity);
-            var repoInterfaceOpen = typeof(IRepository<>);
+            var repoInterfaceOpen = typeof(IEFRepository<>);
             var repoImplOpen = typeof(EfRepository<,>);
             var dbCtxType = typeof(TDbContext);
 

@@ -1,7 +1,7 @@
 ﻿using Asas.Core.EF;
 using Asas.Core.Paging;
 
-public interface IRepository<TEntity> where TEntity : Entity
+public interface IEFRepository<TEntity> where TEntity : Entity
 {
     IQueryable<TEntity> Query();
     TEntity? GetById(Guid id);

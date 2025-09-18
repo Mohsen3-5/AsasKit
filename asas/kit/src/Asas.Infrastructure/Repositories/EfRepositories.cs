@@ -6,7 +6,7 @@ using Asas.Core.Paging;
 
 namespace Asas.Infrastructure.Repositories;
 
-public class EfRepository<TEntity, TDbContext> : IRepository<TEntity>
+public class EfRepository<TEntity, TDbContext> : IEFRepository<TEntity>
     where TEntity : Entity
     where TDbContext : DbContext
 {
