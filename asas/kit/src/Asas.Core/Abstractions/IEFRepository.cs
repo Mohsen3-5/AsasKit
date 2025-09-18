@@ -6,9 +6,9 @@ public interface IEFRepository<TEntity> where TEntity : Entity
     IQueryable<TEntity> Query();
     TEntity? GetById(Guid id);
     Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default);
-    IReadOnlyList<TEntity> GetAll();
-    Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken ct = default);
-    Task<PagedResponse<TEntity>> GetPagedAsync(PagedRequest request, CancellationToken ct = default);
+    IReadOnlyList<TEntity> GetAll(Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null);
+    Task<IReadOnlyList<TEntity>> GetAllAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null, CancellationToken ct = default);
+    Task<PagedResponse<TEntity>> GetPagedAsync(PagedRequest request, Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null, CancellationToken ct = default);
     void Add(TEntity entity);
     Task AddAsync(TEntity entity, CancellationToken ct = default);
 

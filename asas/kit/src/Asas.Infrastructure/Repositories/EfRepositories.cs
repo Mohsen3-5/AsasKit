@@ -19,18 +19,38 @@ public class EfRepository<TEntity, TDbContext> : IEFRepository<TEntity>
     public TEntity? GetById(Guid id) => _db.Set<TEntity>().Find(id);
     public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default)
         => await _db.Set<TEntity>().FindAsync(new object?[] { id }, ct);
-    public IReadOnlyList<TEntity> GetAll() => _db.Set<TEntity>().ToList();
+    public IReadOnlyList<TEntity> GetAll(
+       Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
+    {
+        var query = _db.Set<TEntity>().AsQueryable();
+        if (include != null)
+            query = include(query);
+
+        return query.ToList();
+    }
 
     public async Task<PagedResponse<TEntity>> GetPagedAsync(
-    PagedRequest request,
-    CancellationToken ct = default)
+     PagedRequest request,
+     Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null,
+     CancellationToken ct = default)
     {
-        var query = _db.Set<TEntity>();
+        var query = _db.Set<TEntity>().AsQueryable();
+        if (include != null)
+            query = include(query);
+
         return await query.ToPagedResponseAsync(request, ct);
     }
 
-    public async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken ct = default)
-        => await _db.Set<TEntity>().ToListAsync(ct);
+    public async Task<IReadOnlyList<TEntity>> GetAllAsync(
+     Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null,
+     CancellationToken ct = default)
+    {
+        var query = _db.Set<TEntity>().AsQueryable();
+        if (include != null)
+            query = include(query);
+
+        return await query.ToListAsync(ct);
+    }
 
     public void Add(TEntity entity)
     {
