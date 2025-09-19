@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Asas.Core.EF;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -52,6 +53,13 @@ namespace Asas.Infrastructure.Repositories
             where TDbContext : DbContext
         {
             return services.AddEfRepositoriesFor<TDbContext>(typeof(TMarker).Assembly);
+        }
+
+
+        public static IApplicationBuilder UseAsasInfrastructure(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+            return app;
         }
     }
 }

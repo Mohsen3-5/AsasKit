@@ -4,7 +4,7 @@ namespace Asas.Identity.Domain.Entities
 {
     public class AsasUserRole : IdentityUserRole<Guid>
     {
-        public Guid TenantId { get; set; }
+        public int? TenantId { get; set; }
     }
 
 }

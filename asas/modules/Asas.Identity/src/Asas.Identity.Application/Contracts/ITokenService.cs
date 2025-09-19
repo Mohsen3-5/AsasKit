@@ -14,6 +14,6 @@ public interface ITokenService
         RefreshRequest req,
         CancellationToken ct = default);
 
-    Task RevokeAsync(Guid userId, Guid tenantId, string? device = null, CancellationToken ct = default);
+    Task RevokeAsync(Guid userId, int tenantId, string? device = null, CancellationToken ct = default);
 }
 public sealed record RefreshRequest(string RefreshToken, string? Device);

@@ -2,6 +2,6 @@
 
 namespace Asas.Identity.Domain.Entities
 {
-    public class AsasUserClaim : IdentityUserClaim<Guid> { public Guid TenantId { get; set; } }
+    public class AsasUserClaim : IdentityUserClaim<Guid> { public int? TenantId { get; set; } }
 
 }

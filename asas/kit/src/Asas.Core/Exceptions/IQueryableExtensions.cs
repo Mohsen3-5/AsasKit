@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Asas.Core.Paging;
+using Microsoft.EntityFrameworkCore;
 using EFF = Microsoft.EntityFrameworkCore.EF;
 
-namespace Asas.Core.Paging;
+namespace Asas.Core.Exceptions;
 
 public static class IQueryableExtensions
 {
@@ -32,7 +33,7 @@ public static class IQueryableExtensions
         var count = await query.CountAsync(ct);
 
         var items = await query
-            .Skip((request.PageNumber) * request.PageSize)
+            .Skip(request.PageNumber * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync(ct);
 

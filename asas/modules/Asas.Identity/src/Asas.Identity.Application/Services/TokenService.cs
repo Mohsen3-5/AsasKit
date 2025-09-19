@@ -144,7 +144,7 @@ public sealed class TokenService : ITokenService
     /// <summary>
     /// Revoke active refresh tokens for a user (optionally scoped by device).
     /// </summary>
-    public async Task RevokeAsync(Guid userId, Guid tenantId, string? device = null, CancellationToken ct = default)
+    public async Task RevokeAsync(Guid userId, int tenantId, string? device = null, CancellationToken ct = default)
     {
         var q = _db.RefreshTokens.Where(x =>
             x.UserId == userId &&

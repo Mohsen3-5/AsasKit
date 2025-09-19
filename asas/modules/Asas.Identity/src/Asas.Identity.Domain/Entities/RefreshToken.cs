@@ -3,7 +3,7 @@
 public class RefreshToken
 {
     public Guid Id { get; set; }
-    public Guid TenantId { get; set; }
+    public int? TenantId { get; set; }
     public Guid UserId { get; set; }
 
     // Store only a hash of the token (never the raw token)

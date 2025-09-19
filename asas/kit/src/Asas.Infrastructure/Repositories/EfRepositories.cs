@@ -2,6 +2,7 @@
 using Asas.Tenancy.Contracts;
 using Asas.Core.Paging;
 using Asas.Core.EF;
+using Asas.Core.Exceptions;
 
 namespace Asas.Infrastructure.Repositories;
 

@@ -4,7 +4,7 @@ using Asas.Tenancy.Contracts;
 using Microsoft.AspNetCore.Identity;
 
 public sealed class AuthService(
-    UserManager<AsasUser> users,
+       UserManager<AsasUser> users,
        ICurrentTenant currentTenant,
        ITokenService refreshSvc) : IAuthService
 {
