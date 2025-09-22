@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Asas.Identity.Domain\Asas.Identity.Domain.csproj" />
 	 <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.8" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8"></PackageReference>
   </ItemGroup>
 
 </Project>
