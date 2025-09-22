@@ -10,13 +10,13 @@ public sealed class AuthService(
 {
     public async Task<AuthResult> RegisterAsync(RegisterRequest r, CancellationToken ct = default)
     {
-        var u = new AsasUser { Email = r.Email, UserName = r.Email, TenantId = currentTenant.Id };
+        var u = new AsasUser { Email = r.Email, UserName = r.Email, TenantId = currentTenant.Id, DeviceToken = r.DeviceToken };
         var res = await users.CreateAsync(u, r.Password);
         if (!res.Succeeded)
             throw new InvalidOperationException(string.Join("; ", res.Errors.Select(e => e.Description)));
 
         var roles = Array.Empty<string>();
-        return await IssueAsync(u, roles, device: null, ct);
+        return await IssueAsync(u, roles, ct);
     }
 
     public async Task<AuthResult> LoginAsync(LoginRequest r, CancellationToken ct = default)
@@ -26,7 +26,12 @@ public sealed class AuthService(
             throw new UnauthorizedAccessException();
 
         var roles = await users.GetRolesAsync(u);
-        var auth = await IssueAsync(u, roles, device: r.Device, ct);
+        var auth = await IssueAsync(u, roles, ct);
+        if(!string.IsNullOrEmpty(r.DeviceToken) && r.DeviceToken != u.DeviceToken && !string.IsNullOrEmpty(auth.Token))
+        {
+            u.DeviceToken = r.DeviceToken;
+            await users.UpdateAsync(u);
+        }
 
         return auth;
     }
@@ -34,7 +39,6 @@ public sealed class AuthService(
     private async Task<AuthResult> IssueAsync(
         AsasUser u,
         IEnumerable<string> roles,
-        string? device,
         CancellationToken ct)
     {
         // Delegate all token issuing to RefreshTokenService
@@ -42,7 +46,6 @@ public sealed class AuthService(
             u.Id,
             u.UserName ?? u.Email,
             roles,
-            device,
             ct);
 
         return new AuthResult(access, refresh, exp);

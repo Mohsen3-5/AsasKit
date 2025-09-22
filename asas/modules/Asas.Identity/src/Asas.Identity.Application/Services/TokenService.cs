@@ -42,7 +42,6 @@ public sealed class TokenService : ITokenService
         Guid userId,
         string? displayNameOrEmail,
         IEnumerable<string> roles,
-        string? device,
         CancellationToken ct = default)
     {
         var now = DateTime.UtcNow;
@@ -61,7 +60,6 @@ public sealed class TokenService : ITokenService
             CreatedAtUtc = now,
             CreatedByIp = GetIp(),
             UserAgent = GetUserAgent(),
-            Device = device
         };
 
         _db.RefreshTokens.Add(rt);

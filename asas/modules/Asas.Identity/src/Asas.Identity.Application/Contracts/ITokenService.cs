@@ -7,7 +7,6 @@ public interface ITokenService
         Guid userId,
         string? displayNameOrEmail,          // used for the Name claim
         IEnumerable<string> roles,
-        string? device,
         CancellationToken ct = default);
 
     Task<AuthResult> RefreshAsync(

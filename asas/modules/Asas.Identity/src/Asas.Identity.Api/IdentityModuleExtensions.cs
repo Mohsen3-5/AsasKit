@@ -113,7 +113,7 @@ public static class IdentityModuleExtensions
             opts.Password.RequireNonAlphanumeric = false;
             opts.Password.RequiredLength = 6;
         })
-            .AddRoles<IdentityRole<Guid>>()
+            .AddRoles<AsasRole>()
             .AddEntityFrameworkStores<TContext>();
 
         // ----- JWT binding (Auth:Jwt preferred, fallback to Jwt) -----
