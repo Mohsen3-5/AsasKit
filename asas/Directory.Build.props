@@ -1,15 +1,15 @@
 <Project>
   <PropertyGroup>
     <!-- Centralized Version Management -->
-    <AsasKitVersion>1.2.4</AsasKitVersion>
+    <AsasKitVersion>1.4.0</AsasKitVersion>
     
     <!-- Common Properties for all projects -->
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
-    <Authors>Asas</Authors>
-    <Company>Asas</Company>
+	<Authors>Mohsen Alyousef</Authors>
+	<Company>Asas</Company>
     <Version>$(AsasKitVersion)</Version>
     
   </PropertyGroup>

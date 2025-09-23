@@ -8,15 +8,17 @@ public sealed class AuthService(
        ICurrentTenant currentTenant,
        ITokenService refreshSvc) : IAuthService
 {
-    public async Task<AuthResult> RegisterAsync(RegisterRequest r, CancellationToken ct = default)
+    public async Task<RegisterResult> RegisterAsync(RegisterRequest r, CancellationToken ct = default)
     {
         var u = new AsasUser { Email = r.Email, UserName = r.Email, TenantId = currentTenant.Id, DeviceToken = r.DeviceToken };
         var res = await users.CreateAsync(u, r.Password);
         if (!res.Succeeded)
-            throw new InvalidOperationException(string.Join("; ", res.Errors.Select(e => e.Description)));
+        {
+            var errors = res.Errors.Select(e => e.Description);
+            return new RegisterResult(Guid.Empty, Created: false);
+        }
 
-        var roles = Array.Empty<string>();
-        return await IssueAsync(u, roles, ct);
+        return new RegisterResult(u.Id, Created: true);
     }
 
     public async Task<AuthResult> LoginAsync(LoginRequest r, CancellationToken ct = default)
