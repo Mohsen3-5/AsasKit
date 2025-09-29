@@ -12,6 +12,13 @@ public class AsasTenancyApiModule : AsasModule
 {
     public override void ConfigureServices(IServiceCollection services, IConfiguration cfg)
     {
+        var enableTenancy = cfg.GetValue<bool>("Features:EnableTenancy");
+        if (!enableTenancy)
+        {
+            services.AddScoped<ICurrentTenant, NullCurrentTenant>();
+
+            return; // skip tenancy setup completely
+        }
         var provider = cfg["Data:Provider"] ?? "sqlserver";
         var cs = cfg.GetConnectionString("Default");
         // Tenancy — code-only config (no AddRange on IList)
@@ -46,9 +53,23 @@ public class AsasTenancyApiModule : AsasModule
 
     public override void OnApplicationInitialization(IApplicationBuilder app)
     {
+        var cfg = app.ApplicationServices.GetRequiredService<IConfiguration>();
+        var enableTenancy = cfg.GetValue<bool>("Features:EnableTenancy");
+        var logger = app.ApplicationServices.GetRequiredService<ILogger<AsasTenancyApiModule>>();
+        logger.LogInformation("EnableTenancy = {Flag}", enableTenancy);
+
+        if (!enableTenancy)
+        {
+            // tenancy disabled → skip pipeline setup
+            app.ApplicationServices.GetRequiredService<ILogger<AsasTenancyApiModule>>()
+                .LogInformation("Tenancy is disabled. Skipping middleware.");
+            return;
+        }
+
         app.UseTenancy(); // after UseAuthentication() if you resolve from claims
         app.UseMiddleware<TenantResolutionMiddleware>();
         app.ApplicationServices.GetRequiredService<ILogger<AsasTenancyApiModule>>()
            .LogInformation("Tenancy initialized.");
     }
+
 }

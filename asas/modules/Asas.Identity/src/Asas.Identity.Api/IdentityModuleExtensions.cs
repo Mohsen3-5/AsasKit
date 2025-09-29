@@ -177,22 +177,27 @@ public static class IdentityModuleExtensions
         g.MapPost("/register", async ([FromServices] IAuthService svc, [FromBody] RegisterRequest req, CancellationToken ct) =>
             Results.Ok(await svc.RegisterAsync(req, ct)))
          .AllowAnonymous()
-         .WithName("Auth_Register");
+         .WithName("Auth_Register")
+         .Produces<RegisterResult>(StatusCodes.Status200OK);
 
         g.MapPost("/login", async ([FromServices] IAuthService svc, [FromBody] LoginRequest req, CancellationToken ct) =>
             Results.Ok(await svc.LoginAsync(req, ct)))
          .AllowAnonymous()
-         .WithName("Auth_Login");
+         .WithName("Auth_Login")
+         .Produces<AuthResult>(StatusCodes.Status200OK);
 
         g.MapPost("/forget-password", async ([FromServices] IAuthService svc, [FromBody] ForgotPasswordRequest req, CancellationToken ct) =>
             Results.Ok(await svc.ForgotPasswordAsync(req, ct)))
          .AllowAnonymous()
-         .WithName("Auth_ForgotPassword");
+         .WithName("Auth_ForgotPassword")
+          .Produces<ForgotPasswordResult>(StatusCodes.Status200OK);
+     
 
         g.MapPost("/refresh-token", async ([FromServices] ITokenService svc, [FromBody] RefreshRequest req, CancellationToken ct) =>
             Results.Ok(await svc.RefreshAsync(req, ct)))
          .AllowAnonymous()
-         .WithName("Auth_RefreshToken");
+         .WithName("Auth_RefreshToken")
+         .Produces<AuthResult>(StatusCodes.Status200OK);
 
         return app;
     }

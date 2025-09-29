@@ -2,6 +2,7 @@
 using Asas.Tenancy.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Configuration;
 
 namespace Asas.Tenancy.Infrastructure;
 
@@ -9,11 +10,12 @@ public abstract class BaseAsasDbContext<TDbContext> : DbContext
     where TDbContext : DbContext
 {
     private readonly ICurrentTenant _tenant;
-
-    protected BaseAsasDbContext(DbContextOptions<TDbContext> options, ICurrentTenant tenant)
+    private readonly IConfiguration _configuration;
+    protected BaseAsasDbContext(DbContextOptions<TDbContext> options, ICurrentTenant? tenant, IConfiguration configuration)
         : base(options)
     {
         _tenant = tenant;
+        _configuration = configuration;
     }
 
 
@@ -21,8 +23,13 @@ public abstract class BaseAsasDbContext<TDbContext> : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+
+        var enabledRaw = _configuration["Features:EnableTenancy"];
+        var enableTenancy = bool.TryParse(enabledRaw, out var b) && b;
+
         // Apply global tenant filter to all entities implementing IMultiTenant
-        modelBuilder.ApplyTenantFilters(_tenant);
+        if (enableTenancy)
+            modelBuilder.ApplyTenantFilters(_tenant);
     }
 
     public override int SaveChanges()

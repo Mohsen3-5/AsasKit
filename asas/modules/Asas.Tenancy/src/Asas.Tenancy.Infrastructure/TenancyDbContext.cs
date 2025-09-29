@@ -2,6 +2,7 @@
 using Asas.Tenancy.Contracts;
 using Asas.Tenancy.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Asas.Tenancy.Infrastructure; 
@@ -9,7 +10,7 @@ namespace Asas.Tenancy.Infrastructure;
 public sealed class TenancyDbContext : BaseAsasDbContext<TenancyDbContext>
 {
 
-    public TenancyDbContext(DbContextOptions<TenancyDbContext> options, ICurrentTenant tenant ) : base(options, tenant) {
+    public TenancyDbContext(DbContextOptions<TenancyDbContext> options, ICurrentTenant tenant , IConfiguration configuration ) : base(options, tenant, configuration) {
     }
 
     public DbSet<Tenant> Tenants => Set<Tenant>();

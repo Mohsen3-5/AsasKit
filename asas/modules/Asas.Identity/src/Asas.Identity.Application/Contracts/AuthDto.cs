@@ -7,6 +7,6 @@ namespace Asas.Identity.Application.Contracts
     public sealed record ForgotPasswordRequest(string Email);
     public sealed record ForgotPasswordResult(bool Sent, string? TokenForDevOnly);
     public sealed record ResetPasswordRequest(string Email, string Token, string NewPassword);
-    public sealed record RegisterResult(Guid UserId, bool Created, AuthResult? Auth = null);
+    public sealed record RegisterResult(Guid UserId, bool Created);
 
 }

@@ -2,13 +2,14 @@
 using Asas.Tenancy.Contracts;
 using Asas.Tenancy.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Asas.Permission.Infrastructure
 {
     public class PermissionDbContext : BaseAsasDbContext<PermissionDbContext>
     {
-        public PermissionDbContext(DbContextOptions<PermissionDbContext> options, ICurrentTenant tenant)
-        : base(options, tenant)
+        public PermissionDbContext(DbContextOptions<PermissionDbContext> options, ICurrentTenant tenant , IConfiguration configuration)
+        : base(options, tenant , configuration)
         {
         }
 
