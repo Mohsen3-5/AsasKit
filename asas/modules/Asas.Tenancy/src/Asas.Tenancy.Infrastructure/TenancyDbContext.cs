@@ -10,7 +10,7 @@ namespace Asas.Tenancy.Infrastructure;
 public sealed class TenancyDbContext : BaseAsasDbContext<TenancyDbContext>
 {
 
-    public TenancyDbContext(DbContextOptions<TenancyDbContext> options, ICurrentTenant tenant , IConfiguration configuration ) : base(options, tenant, configuration) {
+    public TenancyDbContext(DbContextOptions<TenancyDbContext> options, ICurrentTenant tenant ) : base(options, tenant) {
     }
 
     public DbSet<Tenant> Tenants => Set<Tenant>();

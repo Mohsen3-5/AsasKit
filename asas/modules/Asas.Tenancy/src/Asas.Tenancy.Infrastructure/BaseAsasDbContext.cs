@@ -10,12 +10,10 @@ public abstract class BaseAsasDbContext<TDbContext> : DbContext
     where TDbContext : DbContext
 {
     private readonly ICurrentTenant _tenant;
-    private readonly IConfiguration _configuration;
-    protected BaseAsasDbContext(DbContextOptions<TDbContext> options, ICurrentTenant? tenant, IConfiguration configuration)
+    protected BaseAsasDbContext(DbContextOptions<TDbContext> options, ICurrentTenant? tenant)
         : base(options)
     {
         _tenant = tenant;
-        _configuration = configuration;
     }
 
 
@@ -24,8 +22,7 @@ public abstract class BaseAsasDbContext<TDbContext> : DbContext
         base.OnModelCreating(modelBuilder);
 
 
-        var enabledRaw = _configuration["Features:EnableTenancy"];
-        var enableTenancy = bool.TryParse(enabledRaw, out var b) && b;
+        var enableTenancy = false ;
 
         // Apply global tenant filter to all entities implementing IMultiTenant
         if (enableTenancy)
@@ -46,11 +43,15 @@ public abstract class BaseAsasDbContext<TDbContext> : DbContext
 
     private void ApplyTenantId()
     {
-        foreach (var entry in ChangeTracker.Entries<Entity>())
+        var enableTenancy = false;
+        if (enableTenancy)
         {
-            if (entry.State == EntityState.Added && entry.Entity.TenantId == null)
+            foreach (var entry in ChangeTracker.Entries<Entity>())
             {
-                entry.Entity.TenantId = _tenant.Id;
+                if (entry.State == EntityState.Added && entry.Entity.TenantId == null)
+                {
+                    entry.Entity.TenantId = _tenant.Id;
+                }
             }
         }
     }
