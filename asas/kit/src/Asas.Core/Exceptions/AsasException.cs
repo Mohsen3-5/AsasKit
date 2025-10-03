@@ -23,6 +23,8 @@ public sealed class AsasException : Exception
 
     public static AsasException Forbidden(string message, string codeName = "Forbidden")
         => new(message, codeName, 403);
+    public static AsasException Unauthorized(string message, string codeName = "Unauthorized")
+    => new(message, codeName, 401);
 
     public static AsasException BadRequest(string message, string codeName = "BadRequest",
                                            IReadOnlyDictionary<string, string[]>? errors = null)

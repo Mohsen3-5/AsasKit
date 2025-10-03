@@ -184,7 +184,9 @@ public static class IdentityModuleExtensions
             Results.Ok(await svc.LoginAsync(req, ct)))
          .AllowAnonymous()
          .WithName("Auth_Login")
-         .Produces<AuthResult>(StatusCodes.Status200OK);
+         .Produces<AuthResult>(StatusCodes.Status200OK)
+         .Produces(StatusCodes.Status401Unauthorized);
+
 
         g.MapPost("/forget-password", async ([FromServices] IAuthService svc, [FromBody] ForgotPasswordRequest req, CancellationToken ct) =>
             Results.Ok(await svc.ForgotPasswordAsync(req, ct)))

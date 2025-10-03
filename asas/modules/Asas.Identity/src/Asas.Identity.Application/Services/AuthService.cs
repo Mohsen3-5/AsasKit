@@ -1,4 +1,5 @@
-﻿using Asas.Identity.Application.Contracts;
+﻿using Asas.Core.Exceptions;
+using Asas.Identity.Application.Contracts;
 using Asas.Identity.Domain.Entities;
 using Asas.Tenancy.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -25,7 +26,7 @@ public sealed class AuthService(
     {
         var u = await users.FindByEmailAsync(r.Email);
         if (u is null || !await users.CheckPasswordAsync(u, r.Password))
-            throw new UnauthorizedAccessException();
+            throw  AsasException.Unauthorized("Invalid email or password.");
 
         var roles = await users.GetRolesAsync(u);
         var auth = await IssueAsync(u, roles, ct);
