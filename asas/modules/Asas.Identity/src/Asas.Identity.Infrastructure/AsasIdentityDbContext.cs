@@ -9,6 +9,7 @@ namespace Asas.Identity.Infrastructure
         public AsasIdentityDbContext(DbContextOptions<AsasIdentityDbContext> options) : base(options) { }
 
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+        public DbSet<UserDevice> UserDevices => Set<UserDevice>();
 
         protected override void OnModelCreating(ModelBuilder b)
         {
@@ -32,6 +33,19 @@ namespace Asas.Identity.Infrastructure
                 e.HasIndex(x => new { x.TenantId, x.UserId });
                 e.HasIndex(x => x.TokenHash).IsUnique();
             });
+
+            b.Entity<UserDevice>(e =>
+            {
+                e.HasKey(x => x.Id);
+
+                e.HasOne(d => d.User)
+                    .WithMany(u => u.Devices)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasIndex(d => new { d.UserId, d.DeviceToken }).IsUnique();
+            });
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿// backend/Modules/Identity/AsasKit.Modules.Identity/IdentityModuleExtensions.cs
+using System.Security.Claims;
 using System.Text;
 using Asas.Identity.Application;
 using Asas.Identity.Application.Contracts;
@@ -43,10 +44,13 @@ public static class IdentityModuleExtensions
         services.TryAddScoped<ICurrentPrincipalAccessor, HttpCurrentPrincipalAccessor>();
         services.TryAddScoped<ICurrentUser, CurrentUser>();
         services.AddScoped<IUserDirectory, UserDirectory>();
+        services.AddScoped<IUserDeviceService, UserDeviceService>();
         services.AddHostedService<IdentitySynchronizer>();
+        services.AddScoped<IUserRoleService, UserRoleService>();
 
         // Token service
         services.TryAddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserDeviceService, UserDeviceService>();
 
         // If you have a non-generic AuthService that implements IAuthService, wire it.
         // If you only have AuthService<TUser>, comment this line (generic is registered below).
@@ -147,19 +151,6 @@ public static class IdentityModuleExtensions
 
         services.AddAuthorization(); // host can still add policies later
 
-        // ----- Generic AuthService<TUser> → IAuthService -----
-        // If you also registered the non-generic above, the first registration "wins".
-        services.TryAddScoped<IAuthService, AuthService>();
-
-        // Current user plumbing (ensure present in generic overload too)
-        services.TryAddScoped<ICurrentPrincipalAccessor, HttpCurrentPrincipalAccessor>();
-        services.TryAddScoped<ICurrentUser, CurrentUser>();
-        services.AddScoped<IUserDirectory, UserDirectory>();
-        services.AddScoped<IUserRoleService, UserRoleService>();
-
-        // Token service
-        services.TryAddScoped<ITokenService, TokenService>();
-
         return services;
     }
 
@@ -201,6 +192,34 @@ public static class IdentityModuleExtensions
          .WithName("Auth_RefreshToken")
          .Produces<AuthResult>(StatusCodes.Status200OK);
 
-        return app;
+        g.MapPost("/logout", async (
+               HttpContext http,
+               [FromServices] IAuthService svc,
+               [FromBody] LogoutDto req,
+               CancellationToken ct) =>
+        {
+            // Get userId from JWT (NameIdentifier or "sub")
+            var userIdClaim =
+                http.User.FindFirst(ClaimTypes.NameIdentifier) ??
+                http.User.FindFirst("sub");
+
+            if (userIdClaim is null || !Guid.TryParse(userIdClaim.Value, out var userId))
+                return Results.Unauthorized();
+
+            var logoutReq = new LogoutRequest(
+                userId,
+                req.DeviceToken,
+                req.AllDevices);
+
+            await svc.LogoutAsync(logoutReq, ct);
+
+            return Results.NoContent();
+        })
+        .RequireAuthorization()
+        .WithName("Auth_Logout")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status401Unauthorized);
+
+        return g;
     }
 }

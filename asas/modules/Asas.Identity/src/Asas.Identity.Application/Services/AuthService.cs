@@ -7,16 +7,33 @@ using Microsoft.AspNetCore.Identity;
 public sealed class AuthService(
        UserManager<AsasUser> users,
        ICurrentTenant currentTenant,
-       ITokenService refreshSvc) : IAuthService
+       ITokenService refreshSvc,
+       IUserDeviceService userDevices) : IAuthService
 {
     public async Task<RegisterResult> RegisterAsync(RegisterRequest r, CancellationToken ct = default)
     {
-        var u = new AsasUser { Email = r.Email, UserName = r.Email, TenantId = currentTenant.Id, DeviceToken = r.DeviceToken };
+        var u = new AsasUser
+        {
+            Email = r.Email,
+            UserName = r.Email,
+            TenantId = currentTenant.Id
+        };
+        
         var res = await users.CreateAsync(u, r.Password);
         if (!res.Succeeded)
         {
             var errors = res.Errors.Select(e => e.Description);
             return new RegisterResult(Guid.Empty, Created: false);
+        }
+
+        // 🔥 Register device token if provided
+        if (!string.IsNullOrWhiteSpace(r.DeviceToken))
+        {
+            await userDevices.RegisterOrUpdateAsync(
+                u.Id,
+                r.DeviceToken,
+                r.DeviceType,   // if you have such property
+                ct);
         }
 
         return new RegisterResult(u.Id, Created: true);
@@ -30,10 +47,13 @@ public sealed class AuthService(
 
         var roles = await users.GetRolesAsync(u);
         var auth = await IssueAsync(u, roles, ct);
-        if(!string.IsNullOrEmpty(r.DeviceToken) && r.DeviceToken != u.DeviceToken && !string.IsNullOrEmpty(auth.Token))
+        if (!string.IsNullOrWhiteSpace(r.DeviceToken))
         {
-            u.DeviceToken = r.DeviceToken;
-            await users.UpdateAsync(u);
+            await userDevices.RegisterOrUpdateAsync(
+                u.Id,
+                r.DeviceToken,
+                r.DeviceType,
+                ct);
         }
 
         return auth;
@@ -79,12 +99,12 @@ public sealed class AuthService(
         catch
         {
             // In dev you may want to surface the token even if email fails.
-#if DEBUG
+            #if DEBUG
             return new ForgotPasswordResult(Sent: false,
                                             TokenForDevOnly: token);
-#else
+                #else
                         throw;
-#endif
+            #endif
         }
     }
 
@@ -96,5 +116,22 @@ public sealed class AuthService(
         var res = await users.ResetPasswordAsync(u, request.Token, request.NewPassword);
         if (!res.Succeeded)
             throw new InvalidOperationException(string.Join("; ", res.Errors.Select(e => e.Description)));
+    }
+
+    public async Task LogoutAsync(LogoutRequest r, CancellationToken ct = default)
+    {
+        var u = await users.FindByIdAsync(r.UserId.ToString())
+                ?? throw AsasException.Unauthorized("User not found.");
+
+        if (r.AllDevices)
+        {
+            // Global logout: remove/deactivate all device tokens for this user
+            await userDevices.DeactivateAllAsync(u.Id, ct);
+        }
+        else if (!string.IsNullOrWhiteSpace(r.DeviceToken))
+        {
+            // Normal logout: just this device
+            await userDevices.DeactivateAsync(u.Id, r.DeviceToken!, ct);
+        }
     }
 }
