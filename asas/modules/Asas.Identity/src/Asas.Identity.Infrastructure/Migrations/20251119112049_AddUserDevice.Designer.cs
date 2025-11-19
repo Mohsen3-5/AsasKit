@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Asas.Identity.Infrastructure.Migrations
 {
     [DbContext(typeof(AsasIdentityDbContext))]
-    [Migration("20251119103651_AddUserDevice")]
+    [Migration("20251119112049_AddUserDevice")]
     partial class AddUserDevice
     {
         /// <inheritdoc />
@@ -302,10 +302,7 @@ namespace Asas.Identity.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAtUtc")
+                    b.Property<DateTime?>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DeviceModel")
@@ -324,12 +321,6 @@ namespace Asas.Identity.Infrastructure.Migrations
 
                     b.Property<string>("PlatformVersion")
                         .HasColumnType("text");
-
-                    b.Property<int?>("TenantId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAtUtc")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");

@@ -26,10 +26,7 @@ namespace Asas.Identity.Infrastructure.Migrations
                     DeviceModel = table.Column<string>(type: "text", nullable: true),
                     PlatformVersion = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DeletedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    TenantId = table.Column<int>(type: "integer", nullable: true)
+                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
