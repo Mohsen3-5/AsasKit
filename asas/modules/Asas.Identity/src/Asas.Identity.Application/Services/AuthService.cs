@@ -1,13 +1,18 @@
 ﻿using Asas.Core.Exceptions;
 using Asas.Identity.Application.Contracts;
 using Asas.Identity.Domain.Entities;
+using Asas.Identity.Infrastructure;
 using Asas.Tenancy.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 public sealed class AuthService(
        UserManager<AsasUser> users,
        ICurrentTenant currentTenant,
        ITokenService refreshSvc,
+       IEmailConfirmationCodeService codeService,
+       IEmailConfirmationCodeSender codeSender,
+       IOptions<AsasIdentityOptions> options,
        IUserDeviceService userDevices) : IAuthService
 {
     public async Task<RegisterResult> RegisterAsync(RegisterRequest r, CancellationToken ct = default)
@@ -18,43 +23,35 @@ public sealed class AuthService(
             UserName = r.Email,
             TenantId = currentTenant.Id
         };
-        
+
         var res = await users.CreateAsync(u, r.Password);
         if (!res.Succeeded)
         {
             var errors = res.Errors.Select(e => e.Description);
-            return new RegisterResult(Guid.Empty, Created: false);
+            // You probably want to surface errors later, but I’ll keep your behavior
+            return new RegisterResult(Guid.Empty, Created: false,errors);
         }
 
-        // 🔥 Register device token if provided
-        if (!string.IsNullOrWhiteSpace(r.DeviceToken))
+        if (options.Value.RequireConfirmedEmail && !string.IsNullOrWhiteSpace(u.Email))
         {
-            await userDevices.RegisterOrUpdateAsync(
-                u.Id,
-                r.DeviceToken,
-                r.DeviceType,   // if you have such property
-                ct);
+            var code = await codeService.GenerateAndStoreAsync(u, false, ct);
+            await codeSender.SendConfirmationCodeAsync(u, code, false, ct);
         }
 
-        return new RegisterResult(u.Id, Created: true);
+
+        return new RegisterResult(u.Id, Created: true, []);
     }
 
     public async Task<AuthResult> LoginAsync(LoginRequest r, CancellationToken ct = default)
     {
         var u = await users.FindByEmailAsync(r.Email);
         if (u is null || !await users.CheckPasswordAsync(u, r.Password))
-            throw  AsasException.Unauthorized("Invalid email or password.");
+            throw AsasException.Unauthorized("Invalid email or password.");
 
         var roles = await users.GetRolesAsync(u);
         var auth = await IssueAsync(u, roles, ct);
-        if (!string.IsNullOrWhiteSpace(r.DeviceToken))
-        {
-            await userDevices.RegisterOrUpdateAsync(
-                u.Id,
-                r.DeviceToken,
-                r.DeviceType,
-                ct);
-        }
+
+        // ✅ No device token logic here anymore
 
         return auth;
     }
@@ -76,47 +73,32 @@ public sealed class AuthService(
 
     public async Task<ForgotPasswordResult> ForgotPasswordAsync(ForgotPasswordRequest r, CancellationToken ct = default)
     {
-        // Don’t reveal whether the email exists (user enumeration hardening).
+        // Don't reveal user existence for security.
         var u = await users.FindByEmailAsync(r.Email);
         if (u is null)
-            return new ForgotPasswordResult(Sent: true, TokenForDevOnly: null);
+            return new ForgotPasswordResult(Sent: true);
 
-        var token = await users.GeneratePasswordResetTokenAsync(u);
+        // Generate a numeric code just like email confirmation
+        var code = await codeService.GenerateAndStoreAsync(u, forPasswordReset: true, ct);
 
-        // Send email (or store in logs/dev response)
-        try
-        {
-            //TODO ADD EMAIL FUNCINALITY
-            //var subject = "Reset your password";
-            //var body = $"""
-            //            Use this code to reset your password:
-            //            <pre>{System.Net.WebUtility.HtmlEncode(token)}</pre>
-            //            If you didn’t request this, ignore this email.
-            //            """;
-            //await email.SendAsync(r.Email, subject, body, ct);
-            return new ForgotPasswordResult(Sent: true, TokenForDevOnly: null);
-        }
-        catch
-        {
-            // In dev you may want to surface the token even if email fails.
-            #if DEBUG
-            return new ForgotPasswordResult(Sent: false,
-                                            TokenForDevOnly: token);
-                #else
-                        throw;
-            #endif
-        }
+        // Send the "forgot password" style email
+        await codeSender.SendConfirmationCodeAsync(u, code, isForgetPasswordConfirmation: true, ct);
+
+        return new ForgotPasswordResult(Sent: true);
     }
+
 
     public async Task ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct = default)
     {
         var u = await users.FindByEmailAsync(request.Email)
-                ?? throw new UnauthorizedAccessException();
+            ?? throw AsasException.Unauthorized("Invalid email.");
 
-        var res = await users.ResetPasswordAsync(u, request.Token, request.NewPassword);
-        if (!res.Succeeded)
-            throw new InvalidOperationException(string.Join("; ", res.Errors.Select(e => e.Description)));
+        var result = await users.ResetPasswordAsync(u, request.ResetToken, request.NewPassword);
+
+        if (!result.Succeeded)
+            throw AsasException.BadRequest(string.Join("; ", result.Errors.Select(e => e.Description)));
     }
+
 
     public async Task LogoutAsync(LogoutRequest r, CancellationToken ct = default)
     {
@@ -133,5 +115,19 @@ public sealed class AuthService(
             // Normal logout: just this device
             await userDevices.DeactivateAsync(u.Id, r.DeviceToken!, ct);
         }
+    }
+
+    // ✅ New: separate device-token API logic
+    public async Task RegisterDeviceAsync(RegisterDeviceRequest r, CancellationToken ct = default)
+    {
+        var u = await users.FindByIdAsync(r.UserId.ToString());
+        if (u is null)
+            throw AsasException.Unauthorized("User not found.");
+
+        await userDevices.RegisterOrUpdateAsync(
+            u.Id,
+            r.DeviceToken,
+            r.DeviceType,
+            ct);
     }
 }

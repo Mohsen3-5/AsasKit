@@ -10,6 +10,7 @@ namespace Asas.Identity.Infrastructure
 
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<UserDevice> UserDevices => Set<UserDevice>();
+        public DbSet<EmailConfirmationCode> EmailConfirmationCodes => Set<EmailConfirmationCode>();
 
         protected override void OnModelCreating(ModelBuilder b)
         {
@@ -44,6 +45,23 @@ namespace Asas.Identity.Infrastructure
                     .OnDelete(DeleteBehavior.Cascade);
 
                 e.HasIndex(d => new { d.UserId, d.DeviceToken }).IsUnique();
+            });
+
+            b.Entity<EmailConfirmationCode>(b =>
+            {
+                b.ToTable("EmailConfirmationCodes");
+                b.HasKey(x => x.Id);
+
+                b.HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                b.Property(x => x.Code)
+                    .IsRequired()
+                    .HasMaxLength(16); // safe length
+
+                b.HasIndex(x => new { x.UserId, x.CreatedAtUtc });
             });
 
         }

@@ -3,6 +3,7 @@ using System;
 using Asas.Identity.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Asas.Identity.Infrastructure.Migrations
 {
     [DbContext(typeof(AsasIdentityDbContext))]
-    partial class AsasIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251125104246_addConfirmationcode")]
+    partial class addConfirmationcode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,10 +263,6 @@ namespace Asas.Identity.Infrastructure.Migrations
 
                     b.Property<DateTime>("ExpiresAtUtc")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Purpose")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<bool>("Used")
                         .HasColumnType("boolean");

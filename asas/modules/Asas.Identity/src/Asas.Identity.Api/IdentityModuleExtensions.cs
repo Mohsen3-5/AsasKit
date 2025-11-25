@@ -1,4 +1,5 @@
 ﻿// backend/Modules/Identity/AsasKit.Modules.Identity/IdentityModuleExtensions.cs
+using System.Runtime.Intrinsics.Arm;
 using System.Security.Claims;
 using System.Text;
 using Asas.Identity.Application;
@@ -9,6 +10,7 @@ using Asas.Identity.Domain.Contracts;
 using Asas.Identity.Domain.Entities;
 using Asas.Identity.Infrastructure;
 using Asas.Identity.Infrastructure.Repo;
+using Humanizer.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +22,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using static System.Net.WebRequestMethods;
 
 namespace Asas.Identity.Api;
 
@@ -47,10 +51,13 @@ public static class IdentityModuleExtensions
         services.AddScoped<IUserDeviceService, UserDeviceService>();
         services.AddHostedService<IdentitySynchronizer>();
         services.AddScoped<IUserRoleService, UserRoleService>();
+        services.TryAddScoped<IEmailConfirmationCodeSender, NullEmailConfirmationCodeSender>();
 
         // Token service
         services.TryAddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserDeviceService, UserDeviceService>();
+        services.Configure<AsasIdentityOptions>(cfg.GetSection("AsasIdentity"));
+        services.AddScoped<IEmailConfirmationCodeService, EmailConfirmationCodeService>();
 
         // If you have a non-generic AuthService that implements IAuthService, wire it.
         // If you only have AuthService<TUser>, comment this line (generic is registered below).
@@ -118,7 +125,8 @@ public static class IdentityModuleExtensions
             opts.Password.RequiredLength = 6;
         })
             .AddRoles<AsasRole>()
-            .AddEntityFrameworkStores<TContext>();
+            .AddEntityFrameworkStores<TContext>()
+            .AddDefaultTokenProviders();
 
         // ----- JWT binding (Auth:Jwt preferred, fallback to Jwt) -----
         var jwtSection = cfg.GetSection("Auth:Jwt");
@@ -184,7 +192,46 @@ public static class IdentityModuleExtensions
          .AllowAnonymous()
          .WithName("Auth_ForgotPassword")
           .Produces<ForgotPasswordResult>(StatusCodes.Status200OK);
-     
+
+
+        g.MapPost("/reset-password", async (
+          [FromServices] IAuthService svc,
+          [FromBody] ResetPasswordRequest req,
+          CancellationToken ct) =>
+        {
+            await svc.ResetPasswordAsync(req, ct);
+            return Results.NoContent();
+        })
+          .AllowAnonymous()
+          .WithName("Auth_ResetPassword")
+          .Produces(StatusCodes.Status204NoContent);
+
+
+        g.MapPost("/verify-reset-code", async (
+        [FromServices] UserManager<AsasUser> userManager,
+        [FromServices] IEmailConfirmationCodeService codeService,
+        [FromBody] VerifyResetCodeRequest req,
+        CancellationToken ct) =>
+        {
+            var user = await userManager.FindByEmailAsync(req.Email);
+            if (user is null)
+                return Results.BadRequest("Invalid email or code.");
+
+            // Validate 6-digit code using your service
+            var ok = await codeService.VerifyAsync(user.Id, req.Code, true, ct);
+            if (!ok)
+                return Results.BadRequest("Invalid or expired code.");
+
+            // Now generate Identity reset token (long token, secure)
+            var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            return Results.Ok(new VerifyResetCodeResult(resetToken));
+        })
+        .AllowAnonymous()
+        .WithName("Auth_VerifyResetCode")
+        .Produces<VerifyResetCodeResult>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest);
+
 
         g.MapPost("/refresh-token", async ([FromServices] ITokenService svc, [FromBody] RefreshRequest req, CancellationToken ct) =>
             Results.Ok(await svc.RefreshAsync(req, ct)))
@@ -219,6 +266,95 @@ public static class IdentityModuleExtensions
         .WithName("Auth_Logout")
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status401Unauthorized);
+
+
+        g.MapPost("/device", async (
+              HttpContext http,
+              [FromServices] IAuthService svc,
+              [FromBody] RegisterDeviceRequest req,
+              CancellationToken ct) =>
+        {
+            var userIdClaim =
+                http.User.FindFirst(ClaimTypes.NameIdentifier) ??
+                http.User.FindFirst("sub");
+
+            if (userIdClaim is null || !Guid.TryParse(userIdClaim.Value, out var userId))
+                return Results.Unauthorized();
+
+            // Never trust userId from body – override it
+            var cmd = req with { UserId = userId };
+
+            await svc.RegisterDeviceAsync(cmd, ct);
+
+            return Results.NoContent();
+        })
+          .RequireAuthorization()
+          .WithName("Auth_RegisterDevice")
+          .Produces(StatusCodes.Status204NoContent)
+          .Produces(StatusCodes.Status401Unauthorized);
+
+        g.MapPost("/confirm-email", async (
+          [FromServices] UserManager<AsasUser> userManager,
+          [FromServices] IEmailConfirmationCodeService codeService,
+          [FromBody] ConfirmEmailCodeRequest dto,
+          CancellationToken ct) =>
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user is null)
+                return Results.NotFound("User not found.");
+
+            var ok = await codeService.VerifyAsync(user.Id, dto.Code, false, ct);
+            if (!ok)
+                return Results.BadRequest("Invalid or expired confirmation code.");
+
+            if (!user.EmailConfirmed)
+            {
+                user.EmailConfirmed = true;
+                var result = await userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                    return Results.Problem("Failed to update user.");
+            }
+
+            return Results.NoContent();
+        })
+        .AllowAnonymous()
+        .WithName("Auth_ConfirmEmail")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status404NotFound);
+
+
+        // ✅ RESEND EMAIL CODE
+        g.MapPost("/resend-email-code", async (
+                [FromServices] UserManager<AsasUser> userManager,
+                [FromServices] IEmailConfirmationCodeService codeService,
+                [FromServices] IEmailConfirmationCodeSender codeSender,
+                [FromServices] IOptions<AsasIdentityOptions> options,
+                [FromBody] ResendEmailCodeRequest dto,
+                CancellationToken ct) =>
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user is null)
+                return Results.NotFound("User not found.");
+
+            var opt = options.Value;
+
+            if (!opt.RequireConfirmedEmail)
+                return Results.BadRequest("Email confirmation is disabled.");
+
+            if (user.EmailConfirmed)
+                return Results.BadRequest("Email is already confirmed.");
+
+            var code = await codeService.GenerateAndStoreAsync(user,false , ct);
+            await codeSender.SendConfirmationCodeAsync(user, code, false, ct);
+
+            return Results.NoContent();
+        })
+          .AllowAnonymous()
+          .WithName("Auth_ResendEmailCode")
+          .Produces(StatusCodes.Status204NoContent)
+          .Produces(StatusCodes.Status400BadRequest)
+          .Produces(StatusCodes.Status404NotFound);
 
         return g;
     }

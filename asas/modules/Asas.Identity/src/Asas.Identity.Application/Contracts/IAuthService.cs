@@ -7,6 +7,7 @@
         Task<ForgotPasswordResult> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken ct = default);
         Task ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct = default);
         Task LogoutAsync(LogoutRequest r, CancellationToken ct = default);
+        Task RegisterDeviceAsync(RegisterDeviceRequest r, CancellationToken ct = default);
 
     }
 }
