@@ -11,16 +11,11 @@ public interface IEFRepository<TEntity> where TEntity : Entity
     Task<PagedResponse<TEntity>> GetPagedAsync(PagedRequest request, Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null, CancellationToken ct = default);
     void Add(TEntity entity);
     Task AddAsync(TEntity entity, CancellationToken ct = default);
-
     void AddRange(IEnumerable<TEntity> entities);
     Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken ct = default);
-
     void Update(TEntity entity);
-    Task UpdateAsync(TEntity entity, CancellationToken ct = default);
-
     void Remove(TEntity entity);
     void RemoveRange(IEnumerable<TEntity> entities);
-
     int SaveChanges();
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 }

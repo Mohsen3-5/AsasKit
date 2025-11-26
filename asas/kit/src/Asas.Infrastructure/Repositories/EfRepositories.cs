@@ -74,12 +74,6 @@ public class EfRepository<TEntity, TDbContext> : IEFRepository<TEntity>
 
     public void Update(TEntity entity) => _db.Set<TEntity>().Update(entity);
 
-    public Task UpdateAsync(TEntity entity, CancellationToken ct = default)
-    {
-        _db.Set<TEntity>().Update(entity);
-        return Task.CompletedTask;
-    }
-
     public void Remove(TEntity entity) => _db.Set<TEntity>().Remove(entity);
 
     public void RemoveRange(IEnumerable<TEntity> entities) => _db.Set<TEntity>().RemoveRange(entities);
