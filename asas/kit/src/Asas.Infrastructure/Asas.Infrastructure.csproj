@@ -9,6 +9,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
     <ProjectReference Include="..\..\..\modules\Asas.Tenancy\src\Asas.Tenancy.Contracts\Asas.Tenancy.Contracts.csproj" />
 	 <ProjectReference Include="..\Asas.Core\Asas.Core.csproj" />
+	 <ProjectReference Include="..\..\..\modules\Asas.Permission\Asas.Permission.Api\Asas.Permission.Api.csproj" />
+
   </ItemGroup>
 
 </Project>

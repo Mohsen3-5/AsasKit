@@ -76,6 +76,7 @@ public static class PermissionModuleExtensions
             }
         });
         services.AddSingleton<IPermissionDefinitionStore, PermissionDefinitionStore>();
+        services.AddSingleton<IPermissionDefinitionProvider, SystemPermissionDefinitionProvider>();
         services.AddHostedService<PermissionSynchronizer>();
 
         services.AddScoped<IPermissionChecker, PermissionChecker>();

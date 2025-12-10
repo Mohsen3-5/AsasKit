@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\kit\src\Asas.Core\Asas.Core.csproj" />
     <ProjectReference Include="..\Asas.Permission.Infrastructure\Asas.Permission.Infrastructure.csproj" />
 	  <ProjectReference Include="..\Asas.Permission.Contracts\Asas.Permission.Contracts.csproj" />
@@ -15,3 +19,4 @@
   </ItemGroup>
 
 </Project>
+
