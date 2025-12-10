@@ -52,7 +52,7 @@ public sealed class AuthService(
         var auth = await IssueAsync(u, roles, ct);
 
         // ✅ No device token logic here anymore
-
+        
         return auth;
     }
 
@@ -67,8 +67,8 @@ public sealed class AuthService(
             u.UserName ?? u.Email,
             roles,
             ct);
-
-        return new AuthResult(access, refresh, exp);
+        
+        return new AuthResult(access, refresh, exp, u.EmailConfirmed);
     }
 
     public async Task<ForgotPasswordResult> ForgotPasswordAsync(ForgotPasswordRequest r, CancellationToken ct = default)

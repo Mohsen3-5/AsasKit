@@ -136,7 +136,7 @@ public sealed class TokenService : ITokenService
 
         await _db.SaveChangesAsync(ct);
 
-        return new AuthResult(accessToken, newRawRefresh, accessExpUtc);
+        return new AuthResult(accessToken, newRawRefresh, accessExpUtc, user.EmailConfirmed);
     }
 
     /// <summary>

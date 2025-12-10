@@ -4,7 +4,7 @@
 
     public sealed record LoginRequest(string Email, string Password);
 
-    public sealed record AuthResult(string Token, string RefreshToken, DateTime ExpiresAtUtc);
+    public sealed record AuthResult(string Token, string RefreshToken, DateTime ExpiresAtUtc, bool EmailConfirmed);
 
     public sealed record ForgotPasswordRequest(string Email);
 
