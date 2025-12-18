@@ -24,11 +24,7 @@ public static class IQueryableExtensions
                 ? query.OrderByDescending(e => EFF.Property<object>(e, propertyName))
                 : query.OrderBy(e => EFF.Property<object>(e, propertyName));
         }
-        else
-        {
-            query = query.OrderBy(e => EFF.Property<object>(e, "CreatedAtUtc")); // ✅ fallback
-        }
-
+     
 
         var count = await query.CountAsync(ct);
 
