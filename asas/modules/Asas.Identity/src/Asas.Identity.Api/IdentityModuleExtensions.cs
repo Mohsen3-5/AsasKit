@@ -206,6 +206,19 @@ public static class IdentityModuleExtensions
           .WithName("Auth_ResetPassword")
           .Produces(StatusCodes.Status204NoContent);
 
+        g.MapPost("/change-password", async (
+          [FromServices] IAuthService svc,
+          [FromBody] ChangePasswordRequest req,
+          CancellationToken ct) =>
+            {
+                await svc.ChangePasswordAsync(req, ct);
+                return Results.NoContent();
+            })
+          .RequireAuthorization()
+          .WithName("Auth_ChangePassword")
+          .Produces(StatusCodes.Status204NoContent)
+          .Produces(StatusCodes.Status401Unauthorized);
+        //
 
         g.MapPost("/verify-reset-code", async (
         [FromServices] UserManager<AsasUser> userManager,

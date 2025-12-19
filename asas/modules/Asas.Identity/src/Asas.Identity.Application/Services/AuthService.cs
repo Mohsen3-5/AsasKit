@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 public sealed class AuthService(
        UserManager<AsasUser> users,
        ICurrentTenant currentTenant,
+       ICurrentUser currentUser,
        ITokenService refreshSvc,
        IEmailConfirmationCodeService codeService,
        IEmailConfirmationCodeSender codeSender,
@@ -94,6 +95,20 @@ public sealed class AuthService(
             ?? throw AsasException.Unauthorized("Invalid email.");
 
         var result = await users.ResetPasswordAsync(u, request.ResetToken, request.NewPassword);
+
+        if (!result.Succeeded)
+            throw AsasException.BadRequest(string.Join("; ", result.Errors.Select(e => e.Description)));
+    }
+
+    public async Task ChangePasswordAsync(ChangePasswordRequest request, CancellationToken ct = default)
+    {
+        if (currentUser == null)
+            throw AsasException.Unauthorized("User not authenticated.");
+
+        var u = await users.FindByEmailAsync(currentUser?.Email)
+            ?? throw AsasException.Unauthorized("Invalid email.");
+
+        var result = await users.ChangePasswordAsync(u, request.currentPassword, request.NewPassword);
 
         if (!result.Succeeded)
             throw AsasException.BadRequest(string.Join("; ", result.Errors.Select(e => e.Description)));

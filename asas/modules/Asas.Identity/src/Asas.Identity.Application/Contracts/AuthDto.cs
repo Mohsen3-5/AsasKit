@@ -11,6 +11,7 @@
     public sealed record ForgotPasswordResult(bool Sent);
 
     public sealed record ResetPasswordRequest(string Email, string ResetToken, string NewPassword);
+    public sealed record ChangePasswordRequest(string currentPassword, string NewPassword);
 
     public sealed record VerifyResetCodeRequest(string Email, string Code);
     public sealed record VerifyResetCodeResult(string ResetToken);
