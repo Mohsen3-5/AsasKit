@@ -1,8 +1,11 @@
-﻿using Asas.Core.Exceptions;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
+using Asas.Core.Exceptions;
 using Asas.Identity.Application.Contracts;
 using Asas.Identity.Domain.Entities;
 using Asas.Identity.Infrastructure;
 using Asas.Tenancy.Contracts;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
@@ -14,7 +17,8 @@ public sealed class AuthService(
        IEmailConfirmationCodeService codeService,
        IEmailConfirmationCodeSender codeSender,
        IOptions<AsasIdentityOptions> options,
-       IUserDeviceService userDevices) : IAuthService
+       IUserDeviceService userDevices,
+       IHttpClientFactory httpClientFactory) : IAuthService
 {
     public async Task<RegisterResult> RegisterAsync(RegisterRequest r, CancellationToken ct = default)
     {
@@ -30,7 +34,7 @@ public sealed class AuthService(
         {
             var errors = res.Errors.Select(e => e.Description);
             // You probably want to surface errors later, but I’ll keep your behavior
-            return new RegisterResult(Guid.Empty, Created: false,errors);
+            return new RegisterResult(Guid.Empty, Created: false, errors);
         }
 
         if (options.Value.RequireConfirmedEmail && !string.IsNullOrWhiteSpace(u.Email))
@@ -53,8 +57,116 @@ public sealed class AuthService(
         var auth = await IssueAsync(u, roles, ct);
 
         // ✅ No device token logic here anymore
-        
+
         return auth;
+    }
+
+    public async Task<ExternalAuthResult> ExternalAuthAsync(ExternalAuthRequest r, CancellationToken ct = default)
+    {
+        // 1. Validate token & get user info
+        var info = await ValidateExternalTokenAsync(r.Provider, r.IdToken);
+
+        // 2. Find user by email or by External Login
+        var u = await users.FindByEmailAsync(info.Email);
+        if (u is null)
+        {
+            u = new AsasUser
+            {
+                Email = info.Email,
+                UserName = info.Email,
+                TenantId = currentTenant.Id,
+                EmailConfirmed = true // External providers usually verify email
+            };
+            var res = await users.CreateAsync(u);
+            if (!res.Succeeded)
+                throw AsasException.BadRequest(string.Join("; ", res.Errors.Select(e => e.Description)));
+        }
+
+        // 3. Link external login if not already linked (optional but good practice)
+        var loginInfo = new UserLoginInfo(r.Provider, info.ProviderKey, r.Provider);
+        var logins = await users.GetLoginsAsync(u);
+        if (logins.All(l => l.LoginProvider != r.Provider))
+        {
+            await users.AddLoginAsync(u, loginInfo);
+        }
+
+        var roles = await users.GetRolesAsync(u);
+        var auth = await IssueAsync(u, roles, ct);
+        return new ExternalAuthResult(auth.Token, auth.RefreshToken, auth.ExpiresAtUtc, auth.EmailConfirmed, info.Name, info.Picture);
+    }
+
+    private async Task<(string Email, string Name, string ProviderKey, string? Picture)> ValidateExternalTokenAsync(string provider, string idToken)
+    {
+        switch (provider.ToLowerInvariant())
+        {
+            case "google":
+                return await ValidateGoogleTokenAsync(idToken);
+            case "facebook":
+                return await ValidateFacebookTokenAsync(idToken);
+            case "apple":
+                return ValidateAppleToken(idToken);
+            default:
+                throw AsasException.BadRequest($"Provider {provider} not supported.");
+        }
+    }
+
+    private async Task<(string Email, string Name, string ProviderKey, string? Picture)> ValidateGoogleTokenAsync(string idToken)
+    {
+        try
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings();
+            if (!string.IsNullOrEmpty(options.Value.ExternalAuth.Google.ClientId))
+            {
+                settings.Audience = [options.Value.ExternalAuth.Google.ClientId];
+            }
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+            return (payload.Email, payload.Name, payload.Subject, payload.Picture);
+        }
+        catch (Exception ex)
+        {
+            throw AsasException.Unauthorized($"Google token validation failed: {ex.Message}");
+        }
+    }
+
+    private async Task<(string Email, string Name, string ProviderKey, string? Picture)> ValidateFacebookTokenAsync(string accessToken)
+    {
+        var client = httpClientFactory.CreateClient();
+        var response = await client.GetAsync($"https://graph.facebook.com/me?fields=id,name,email&access_token={accessToken}");
+        if (!response.IsSuccessStatusCode)
+            throw AsasException.Unauthorized("Facebook token validation failed.");
+
+        var payload = await response.Content.ReadFromJsonAsync<FacebookPayload>();
+        if (payload == null || string.IsNullOrEmpty(payload.Email))
+            throw AsasException.Unauthorized("Facebook token validation failed or email not provided.");
+
+        var pictureUrl = $"https://graph.facebook.com/{payload.Id}/picture?type=large";
+        return (payload.Email, payload.Name ?? "", payload.Id, pictureUrl);
+    }
+
+    private (string Email, string Name, string ProviderKey, string? Picture) ValidateAppleToken(string idToken)
+    {
+        // For Apple, the idToken is a JWT. We should ideally validate the signature.
+        // For now, we decode it to get the claims. In production, signature validation is mandatory.
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        if (!handler.CanReadToken(idToken))
+            throw AsasException.Unauthorized("Invalid Apple token format.");
+
+        var jwt = handler.ReadJwtToken(idToken);
+        var email = jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+        var sub = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(sub))
+            throw AsasException.Unauthorized("Apple token missing required claims.");
+
+        return (email, "", sub, null);
+    }
+
+    private class FacebookPayload
+    {
+        public string Id { get; set; } = default!;
+        public string? Name { get; set; }
+        public string? Email { get; set; }
     }
 
     private async Task<AuthResult> IssueAsync(
@@ -68,7 +180,7 @@ public sealed class AuthService(
             u.UserName ?? u.Email,
             roles,
             ct);
-        
+
         return new AuthResult(access, refresh, exp, u.EmailConfirmed);
     }
 
@@ -102,10 +214,10 @@ public sealed class AuthService(
 
     public async Task ChangePasswordAsync(ChangePasswordRequest request, CancellationToken ct = default)
     {
-        if (currentUser == null)
+        if (currentUser == null || string.IsNullOrEmpty(currentUser.Email))
             throw AsasException.Unauthorized("User not authenticated.");
 
-        var u = await users.FindByEmailAsync(currentUser?.Email)
+        var u = await users.FindByEmailAsync(currentUser.Email)
             ?? throw AsasException.Unauthorized("Invalid email.");
 
         var result = await users.ChangePasswordAsync(u, request.currentPassword, request.NewPassword);

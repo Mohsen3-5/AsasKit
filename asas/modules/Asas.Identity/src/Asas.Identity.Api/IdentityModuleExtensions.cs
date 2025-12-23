@@ -58,6 +58,7 @@ public static class IdentityModuleExtensions
         services.AddScoped<IUserDeviceService, UserDeviceService>();
         services.Configure<AsasIdentityOptions>(cfg.GetSection("AsasIdentity"));
         services.AddScoped<IEmailConfirmationCodeService, EmailConfirmationCodeService>();
+        services.AddHttpClient();
 
         // If you have a non-generic AuthService that implements IAuthService, wire it.
         // If you only have AuthService<TUser>, comment this line (generic is registered below).
@@ -358,7 +359,7 @@ public static class IdentityModuleExtensions
             if (user.EmailConfirmed)
                 return Results.BadRequest("Email is already confirmed.");
 
-            var code = await codeService.GenerateAndStoreAsync(user,false , ct);
+            var code = await codeService.GenerateAndStoreAsync(user, false, ct);
             await codeSender.SendConfirmationCodeAsync(user, code, false, ct);
 
             return Results.NoContent();

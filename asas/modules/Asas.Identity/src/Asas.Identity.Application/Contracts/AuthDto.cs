@@ -3,8 +3,10 @@
     public sealed record RegisterRequest(string Email, string Password);
 
     public sealed record LoginRequest(string Email, string Password);
+    public sealed record ExternalAuthRequest(string Provider, string IdToken);
 
     public sealed record AuthResult(string Token, string RefreshToken, DateTime ExpiresAtUtc, bool EmailConfirmed);
+    public sealed record ExternalAuthResult(string Token, string RefreshToken, DateTime ExpiresAtUtc, bool EmailConfirmed, string? Name = null, string? ProfileImageUrl = null);
 
     public sealed record ForgotPasswordRequest(string Email);
 
@@ -17,7 +19,7 @@
     public sealed record VerifyResetCodeResult(string ResetToken);
 
 
-    public sealed record RegisterResult(Guid UserId, bool Created,IEnumerable<string?> Errors);
+    public sealed record RegisterResult(Guid UserId, bool Created, IEnumerable<string?> Errors);
 
     // Logout still cares about device token (to deactivate that device)
     public sealed record LogoutRequest(

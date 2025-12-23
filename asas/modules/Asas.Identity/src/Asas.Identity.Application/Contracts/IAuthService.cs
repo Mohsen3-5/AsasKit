@@ -4,6 +4,7 @@
     {
         Task<RegisterResult> RegisterAsync(RegisterRequest request, CancellationToken ct = default);
         Task<AuthResult> LoginAsync(LoginRequest request, CancellationToken ct = default);
+        Task<ExternalAuthResult> ExternalAuthAsync(ExternalAuthRequest request, CancellationToken ct = default);
         Task<ForgotPasswordResult> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken ct = default);
         Task ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct = default);
         Task ChangePasswordAsync(ChangePasswordRequest request, CancellationToken ct = default);
