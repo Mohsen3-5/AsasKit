@@ -162,7 +162,7 @@ const Navbar = ({ theme, toggleTheme }) => {
       {/* Desktop Links */}
       <div className="hide-mobile" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
         <Link to="/docs" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = 'var(--text-main)'} onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>Documentation</Link>
-        <a href="https://github.com" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}>
+        <a href="https://github.com/Mohsen3-5/AsasKit" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}>
           <Github size={18} />
           <span>GitHub</span>
         </a>
@@ -215,7 +215,7 @@ const Navbar = ({ theme, toggleTheme }) => {
               <X size={32} />
             </button>
             <Link to="/docs" onClick={() => setIsOpen(false)} style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '1.5rem', fontWeight: 900, fontFamily: "'Unbounded', sans-serif" }}>DOCS</Link>
-            <a href="https://github.com" style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '1.5rem', fontWeight: 900, fontFamily: "'Unbounded', sans-serif" }}>GITHUB</a>
+            <a href="https://github.com/Mohsen3-5/AsasKit" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '1.5rem', fontWeight: 900, fontFamily: "'Unbounded', sans-serif" }}>GITHUB</a>
             <div style={{ marginTop: 'auto' }}>
               <Link to="/docs" onClick={() => setIsOpen(false)}>
                 <button className="glow-btn" style={{ width: '100%', padding: '20px' }}>Get Started</button>
@@ -599,7 +599,7 @@ function App() {
                   <h4 style={{ color: 'var(--text-main)', marginBottom: '2.5rem', fontSize: '1.2rem', fontWeight: 900, fontFamily: "'Unbounded', sans-serif" }}>SOCIAL</h4>
                   <ul style={{ listStyle: 'none', padding: 0, color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '1.5rem', fontSize: '1.1rem' }}>
                     <li><a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Discord Guild</a></li>
-                    <li><a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>GitHub Repo</a></li>
+                    <li><a href="https://github.com/Mohsen3-5/AsasKit" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>GitHub Repo</a></li>
                     <li><a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Twitter / X</a></li>
                   </ul>
                 </div>
