@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 import {
   Shield,
   Lock,
@@ -231,16 +241,16 @@ const Navbar = ({ theme, toggleTheme }) => {
 
 const Particles = () => (
   <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-    {[...Array(15)].map((_, i) => (
+    {[...Array(10)].map((_, i) => (
       <motion.div
         key={i}
         animate={{
-          x: [Math.random() * 200 - 100, Math.random() * 200 - 100],
-          y: [Math.random() * 200 - 100, Math.random() * 200 - 100],
-          opacity: [0.1, 0.4, 0.1],
+          x: [Math.random() * 100 - 50, Math.random() * 100 - 50],
+          y: [Math.random() * 100 - 50, Math.random() * 100 - 50],
+          opacity: [0.1, 0.3, 0.1],
         }}
         transition={{
-          duration: 10 + Math.random() * 10,
+          duration: 15 + Math.random() * 10,
           repeat: Infinity,
           ease: "linear"
         }}
@@ -252,7 +262,10 @@ const Particles = () => (
           height: '2px',
           background: 'var(--primary)',
           borderRadius: '50%',
-          boxShadow: '0 0 12px var(--primary)'
+          boxShadow: '0 0 10px var(--primary)',
+          willChange: 'transform, opacity',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden'
         }}
       />
     ))}
@@ -587,6 +600,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div style={{ minHeight: '100vh', background: 'var(--bg-darker)', position: 'relative', transition: 'all 0.5s var(--ease-premium)' }}>
         <BackgroundEffect />
         <Navbar theme={theme} toggleTheme={toggleTheme} />

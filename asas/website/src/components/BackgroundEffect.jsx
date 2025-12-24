@@ -15,59 +15,65 @@ const BackgroundEffect = () => (
         {/* Animated Blobs */}
         <motion.div
             animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.08, 0.12, 0.08],
-                x: [0, 50, 0],
-                y: [0, -30, 0]
+                scale: [1, 1.1, 1],
+                opacity: [0.06, 0.1, 0.06],
+                x: [0, 30, 0],
+                y: [0, -20, 0]
             }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
             style={{
                 position: 'absolute',
                 width: '60vw',
                 height: '60vw',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(99, 102, 241, 1) 0%, rgba(99, 102, 241, 0) 70%)',
+                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.8) 0%, rgba(99, 102, 241, 0) 70%)',
                 top: '-15%',
                 right: '-10%',
-                filter: 'blur(80px)'
+                filter: 'blur(80px)',
+                willChange: 'transform, opacity',
+                pointerEvents: 'none'
             }}
         />
 
         <motion.div
             animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.04, 0.07, 0.04],
-                x: [0, -40, 0],
-                y: [0, 20, 0]
+                scale: [1, 1.2, 1],
+                opacity: [0.03, 0.05, 0.03],
+                x: [0, -30, 0],
+                y: [0, 15, 0]
             }}
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
             style={{
                 position: 'absolute',
                 width: '50vw',
                 height: '50vw',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(244, 63, 94, 1) 0%, rgba(244, 63, 94, 0) 70%)',
-                bottom: '5%',
+                background: 'radial-gradient(circle, rgba(244, 63, 94, 0.8) 0%, rgba(244, 63, 94, 0) 70%)',
+                bottom: '10%',
                 left: '-10%',
-                filter: 'blur(100px)'
+                filter: 'blur(100px)',
+                willChange: 'transform, opacity',
+                pointerEvents: 'none'
             }}
         />
 
         <motion.div
             animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.03, 0.05, 0.03]
+                scale: [1, 1.05, 1],
+                opacity: [0.02, 0.04, 0.02]
             }}
-            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             style={{
                 position: 'absolute',
                 width: '40vw',
                 height: '40vw',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(168, 85, 247, 1) 0%, rgba(168, 85, 247, 0) 70%)',
+                background: 'radial-gradient(circle, rgba(168, 85, 247, 0.8) 0%, rgba(168, 85, 247, 0) 70%)',
                 top: '30%',
                 left: '20%',
-                filter: 'blur(120px)'
+                filter: 'blur(120px)',
+                willChange: 'transform, opacity',
+                pointerEvents: 'none'
             }}
         />
 
