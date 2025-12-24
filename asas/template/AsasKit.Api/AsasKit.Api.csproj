@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asas.Infrastructure" Version="1.9.4" />
+    <PackageReference Include="Asas.Identity.Api" Version="1.9.4" />
+    <PackageReference Include="Asas.Permission.Api" Version="1.9.4" />
+    <PackageReference Include="Asas.Tenancy.Api" Version="1.9.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AsasKit.Application\AsasKit.Application.csproj" />
+    <ProjectReference Include="..\AsasKit.Infrastructure\AsasKit.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

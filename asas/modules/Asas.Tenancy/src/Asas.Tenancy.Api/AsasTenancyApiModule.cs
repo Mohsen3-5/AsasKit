@@ -31,7 +31,7 @@ public class AsasTenancyApiModule : AsasModule
 
                 o.HeaderName = "X-Tenant";
                 o.RouteParamName = "tenant";
-                // o.RootDomain = "asas.local";
+                o.FallbackTenantId = cfg.GetValue<int?>("AsasTenancy:FallbackTenantId");
             },
             model: o =>
             {
@@ -42,13 +42,11 @@ public class AsasTenancyApiModule : AsasModule
                 o.ExcludeNamespaces.Add("Microsoft.AspNetCore.Identity");
             });
 
-        services.AddTenantedDbContext<TenancyDbContext>(cfg, cs, provider); // <-- replace with your actual DbContext type
+        services.AddTenantedDbContext<TenancyDbContext>(cfg, cs, provider);
         services.AddOptions<TenancyModelOptions>();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentTenant, HostCurrentTenant>();
         services.AddScoped<ITenantStore, EfTenantStore>();
-
-
     }
 
     public override void OnApplicationInitialization(IApplicationBuilder app)
@@ -56,20 +54,15 @@ public class AsasTenancyApiModule : AsasModule
         var cfg = app.ApplicationServices.GetRequiredService<IConfiguration>();
         var enableTenancy = cfg.GetValue<bool>("Features:EnableTenancy");
         var logger = app.ApplicationServices.GetRequiredService<ILogger<AsasTenancyApiModule>>();
-        logger.LogInformation("EnableTenancy = {Flag}", enableTenancy);
 
         if (!enableTenancy)
         {
-            // tenancy disabled → skip pipeline setup
-            app.ApplicationServices.GetRequiredService<ILogger<AsasTenancyApiModule>>()
-                .LogInformation("Tenancy is disabled. Skipping middleware.");
+            logger.LogInformation("Tenancy is disabled. Skipping middleware.");
             return;
         }
 
-        app.UseTenancy(); // after UseAuthentication() if you resolve from claims
-        app.UseMiddleware<TenantResolutionMiddleware>();
-        app.ApplicationServices.GetRequiredService<ILogger<AsasTenancyApiModule>>()
-           .LogInformation("Tenancy initialized.");
+        app.UseTenancy();
+        logger.LogInformation("Tenancy initialized (Fallback: {FallbackId}).",
+            cfg["AsasTenancy:FallbackTenantId"] ?? "None");
     }
-
 }

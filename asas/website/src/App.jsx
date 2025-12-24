@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import Docs from './components/Docs';
 import BackgroundEffect from './components/BackgroundEffect';
+import QuickStart from './components/QuickStart';
 
 const ThemeToggle = ({ theme, toggleTheme }) => (
   <motion.button
@@ -335,19 +336,19 @@ const Hero = () => (
         transition={{ duration: 0.8, delay: 0.4 }}
         style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}
       >
-        <Link to="/docs" style={{ textDecoration: 'none' }}>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="glow-btn"
-            style={{ fontSize: '1.2rem', padding: '24px 56px' }}
-          >
-            Explore Docs
-          </motion.button>
-        </Link>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => document.getElementById('install')?.scrollIntoView({ behavior: 'smooth' })}
+          className="glow-btn"
+          style={{ fontSize: '1.2rem', padding: '24px 56px' }}
+        >
+          Install Now
+        </motion.button>
         <motion.button
           whileHover={{ scale: 1.05, background: 'rgba(255,255,255,0.05)' }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => document.getElementById('quick-start')?.scrollIntoView({ behavior: 'smooth' })}
           className="glass-card"
           style={{
             padding: '24px 56px',
@@ -361,7 +362,7 @@ const Hero = () => (
             gap: '1.2rem'
           }}
         >
-          Get CLI <Terminal size={24} />
+          Quick Start <Terminal size={24} />
         </motion.button>
       </motion.div>
     </div>
@@ -459,17 +460,33 @@ const ModuleShowcase = () => (
 );
 
 const Installation = () => {
-  const [copied, setCopied] = useState(false);
-  const command = "dotnet new install Asas.Templates";
+  const [activeStep, setActiveStep] = useState(0);
+  const steps = [
+    {
+      title: "Install AsasKit CLI",
+      command: "dotnet tool install --global AsasKit.Cli",
+      description: "One command to rule them all. Scaffolding, management, and more."
+    }
+  ];
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(command);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    const toast = document.createElement('div');
+    toast.innerText = 'Copied to clipboard!';
+    toast.style.position = 'fixed';
+    toast.style.bottom = '2rem';
+    toast.style.right = '2rem';
+    toast.style.background = 'var(--primary)';
+    toast.style.color = 'white';
+    toast.style.padding = '12px 24px';
+    toast.style.borderRadius = '12px';
+    toast.style.zIndex = '9999';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
   };
 
   return (
-    <section style={{ padding: '12rem 0' }}>
+    <section id="install" style={{ padding: '8rem 0' }}>
       <div className="container">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -477,63 +494,71 @@ const Installation = () => {
           viewport={{ once: true }}
           className="glass-card glowing-border"
           style={{
-            padding: '6rem',
-            borderRadius: '50px',
+            padding: '4rem',
+            borderRadius: '40px',
             background: 'linear-gradient(135deg, var(--glass) 0%, rgba(99, 102, 241, 0.05) 100%)',
             textAlign: 'center'
           }}
         >
           <h2 style={{
-            fontSize: 'clamp(2.5rem, 7vw, 5rem)',
+            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
             fontWeight: 900,
-            marginBottom: '2.5rem',
-            letterSpacing: '-3px',
-            lineHeight: 1,
+            marginBottom: '1.5rem',
+            letterSpacing: '-2px',
             fontFamily: "'Unbounded', sans-serif"
           }}>
-            START BUILDING <br /><span className="primary-gradient-text">TODAY.</span>
+            GET READY IN <span className="primary-gradient-text">SECONDS.</span>
           </h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '5rem', fontSize: '1.4rem', lineHeight: 1.6, maxWidth: '800px', margin: '0 auto 5rem' }}>
-            Unleash your creativity with our professional CLI templates. 100% open-source, 100% powerful.
+          <p style={{ color: 'var(--text-muted)', marginBottom: '4rem', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto 4rem' }}>
+            Install the CLI tool and start building your next masterpiece immediately.
           </p>
 
-          <div style={{
-            background: '#010409',
-            padding: '2rem 3rem',
-            borderRadius: '25px',
-            border: '2px solid var(--glass-border)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '2.5rem',
-            fontFamily: '"Fira Code", monospace',
-            fontSize: '1.2rem',
-            boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
-            position: 'relative',
-            overflow: 'hidden',
-            maxWidth: '100%'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', overflowX: 'auto' }}>
-              <Terminal size={28} color="var(--primary)" />
-              <span style={{ color: '#e6edf3', whiteSpace: 'nowrap' }}>{command}</span>
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={copyToClipboard}
-              style={{
-                background: 'var(--primary)',
-                border: 'none',
-                borderRadius: '12px',
-                color: 'white',
-                padding: '12px 28px',
-                fontSize: '1rem',
-                cursor: 'pointer',
-                fontWeight: 900
-              }}
-            >
-              {copied ? "COPIED" : "COPY"}
-            </motion.button>
+          <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {steps.map((step, idx) => (
+              <motion.div
+                key={idx}
+                whileHover={{ y: -5 }}
+                className="glass-card"
+                style={{
+                  flex: '1',
+                  minWidth: '300px',
+                  maxWidth: '500px',
+                  padding: '2.5rem',
+                  textAlign: 'left',
+                  background: 'rgba(0,0,0,0.2)',
+                  border: '1px solid var(--glass-border)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1.5rem'
+                }}
+              >
+                <div>
+                  <h3 style={{ color: 'var(--text-main)', fontSize: '1.8rem', fontWeight: 800 }}>{step.title}</h3>
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>{step.description}</p>
+                <div style={{
+                  background: '#010409',
+                  padding: '1.2rem 1.5rem',
+                  borderRadius: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  fontFamily: '"Fira Code", monospace',
+                  fontSize: '0.9rem',
+                  border: '1px solid var(--glass-border)'
+                }}>
+                  <code style={{ color: '#e6edf3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{step.command}</code>
+                  <button
+                    onClick={() => copyToClipboard(step.command)}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '5px' }}
+                    onMouseEnter={(e) => e.target.style.color = 'var(--text-main)'}
+                    onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}
+                  >
+                    <Terminal size={18} />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       </div>
@@ -544,8 +569,9 @@ const Installation = () => {
 const LandingPage = () => (
   <>
     <Hero />
-    <ModuleShowcase />
     <Installation />
+    <QuickStart />
+    <ModuleShowcase />
   </>
 );
 

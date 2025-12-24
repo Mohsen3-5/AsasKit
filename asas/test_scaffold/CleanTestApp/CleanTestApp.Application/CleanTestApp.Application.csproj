@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Asas.Identity.Application" Version="1.9.4" />
+    <PackageReference Include="Asas.Permission.Application" Version="1.9.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanTestApp.Domain\CleanTestApp.Domain.csproj" />
+    <ProjectReference Include="..\CleanTestApp.Contracts\CleanTestApp.Contracts.csproj" />
+    <ProjectReference Include="..\CleanTestApp.Infrastructure\CleanTestApp.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

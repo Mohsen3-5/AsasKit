@@ -1,36 +1,46 @@
-﻿
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Asas.Tenancy.Infrastructure.Runtime;
+
 namespace Asas.Tenancy.Infrastructure.EF;
 public sealed class TenantResolutionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<TenantResolutionMiddleware> _log;
-    public TenantResolutionMiddleware(RequestDelegate next, ILogger<TenantResolutionMiddleware> log)
-        => (_next, _log) = (next, log);
+    private readonly TenancyOptions _options;
+
+    public TenantResolutionMiddleware(
+        RequestDelegate next,
+        ILogger<TenantResolutionMiddleware> log,
+        IOptions<TenancyOptions> options)
+        => (_next, _log, _options) = (next, log, options.Value);
 
     public async Task Invoke(HttpContext ctx, ITenantStore store)
     {
-
-        // TODO: support subdomain resolution strategie;
+        // resolution logic
         var host = ctx.Request.Host.Host;
         _log.LogWarning("host : {host}", host);
 
         string? fromSub = null;
-        if (!string.IsNullOrWhiteSpace(host)) // real subdomain like foo.example.com
+        if (!string.IsNullOrWhiteSpace(host))
         {
             fromSub = host.Split('.')[0];
         }
         _log.LogWarning("sub : {fromSub}", fromSub);
 
-        // ignore "localhost" as tenant
         TenantDto? tenant = null;
         if (!string.IsNullOrWhiteSpace(fromSub))
             tenant = await store.FindByHostAsync(fromSub);
 
-        _log.LogWarning("Tenancy: {tenant}",
-              tenant);
+        // Fallback logic
+        if (tenant is null && _options.FallbackTenantId.HasValue)
+        {
+            _log.LogInformation("Tenancy: Falling back to '{FallbackId}'", _options.FallbackTenantId);
+            tenant = await store.FindByIdAsync(_options.FallbackTenantId.Value);
+        }
+
         if (tenant is null)
         {
             ctx.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -43,11 +53,10 @@ public sealed class TenantResolutionMiddleware
             return;
         }
 
-        ctx.Items["TenantId"] = tenant.Id;   // this is the slug from Tenants.Identifier
+        ctx.Items["TenantId"] = tenant.Id;
         ctx.Items["Tenant"] = tenant;
 
         _log.LogInformation("Tenancy: resolved & verified tenant '{TenantId}' ({Name})", tenant.Id, tenant.Name);
         await _next(ctx);
     }
-
 }

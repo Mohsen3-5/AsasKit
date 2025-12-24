@@ -7,4 +7,5 @@ public sealed class TenancyOptions
     public string RouteParamName { get; set; } = "tenant";
     public string ClaimType { get; set; } = "tenant_id";
     public string? RootDomain { get; set; } // e.g. "example.com"
+    public int? FallbackTenantId { get; set; } // e.g. 1
 }

@@ -1,0 +1,30 @@
+using Asas.Core.Modularity;
+using Asas.Identity.Api;
+using Asas.Permission.Api;
+using Asas.Tenancy.Api;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace CleanTestApp.Api
+{
+    [DependsOn(
+        typeof(AsasIdentityApiModule),
+        typeof(AsasTenancyApiModule),
+        typeof(AsasPermissionApiModule)
+        )]
+    public class CleanTestAppModule : AsasModule
+    {
+        public override void ConfigureServices(IServiceCollection services, IConfiguration cfg)
+        {
+            services.AddHttpContextAccessor();
+        }
+
+        public override void OnApplicationInitialization(IApplicationBuilder app)
+        {
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+        }
+    }
+}

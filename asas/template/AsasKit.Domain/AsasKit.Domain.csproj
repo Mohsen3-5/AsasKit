@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asas.Core" Version="1.9.4" />
+    <PackageReference Include="Asas.Identity.Domain" Version="1.9.4" />
+  </ItemGroup>
+</Project>
