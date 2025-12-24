@@ -131,10 +131,31 @@ public sealed class AuthService(
 
     private async Task<(string Email, string Name, string ProviderKey, string? Picture)> ValidateFacebookTokenAsync(string accessToken)
     {
+        // 1. Check if the token is a JWT (Facebook Limited Login)
+        // iOS often uses Limited Login which returns an OIDC-compliant JWT instead of a Graph access token.
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        if (handler.CanReadToken(accessToken))
+        {
+            var jwt = handler.ReadJwtToken(accessToken);
+            var email = jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+            var name = jwt.Claims.FirstOrDefault(c => c.Type == "name")?.Value ?? "";
+            var sub = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var picture = jwt.Claims.FirstOrDefault(c => c.Type == "picture")?.Value;
+
+            if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(sub))
+            {
+                return (email, name, sub, picture);
+            }
+        }
+
+        // 2. Fallback to standard Graph API validation
         var client = httpClientFactory.CreateClient();
         var response = await client.GetAsync($"https://graph.facebook.com/me?fields=id,name,email&access_token={accessToken}");
         if (!response.IsSuccessStatusCode)
-            throw AsasException.Unauthorized("Facebook token validation failed.");
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw AsasException.Unauthorized($"Facebook token validation failed: {error}");
+        }
 
         var payload = await response.Content.ReadFromJsonAsync<FacebookPayload>();
         if (payload == null || string.IsNullOrEmpty(payload.Email))
