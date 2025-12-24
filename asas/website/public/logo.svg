@@ -1,0 +1,14 @@
+<svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logo-favicon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#f43f5e" />
+    </linearGradient>
+  </defs>
+  <!-- Outer triangle -->
+  <path d="M50 10L90 85H10L50 10Z" stroke="url(#logo-favicon-gradient)" stroke-width="4" fill="none"/>
+  <!-- Inner triangle -->
+  <path d="M50 30L75 75H25L50 30Z" fill="#6366f1" opacity="0.3"/>
+  <!-- Accent stroke -->
+  <path d="M35 85L50 60L65 85" stroke="#f43f5e" stroke-width="6" stroke-linecap="round"/>
+</svg>
