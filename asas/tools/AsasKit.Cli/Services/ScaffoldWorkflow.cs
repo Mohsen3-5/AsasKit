@@ -27,8 +27,24 @@ internal static class ScaffoldWorkflow
         if (!string.IsNullOrWhiteSpace(dbOverride))
         {
             cfg = new CliConfig { Provider = dbOverride, ConnectionString = csOverride };
-            if (string.IsNullOrWhiteSpace(cfg.ConnectionString) && dbOverride.ToLowerInvariant() == "sqlite")
-                cfg.ConnectionString = $"Data Source=./{appName}.db";
+            if (string.IsNullOrWhiteSpace(cfg.ConnectionString))
+            {
+                var dbLower = dbOverride.ToLowerInvariant();
+                switch (dbLower)
+                {
+                    case "sqlite":
+                        cfg.ConnectionString = $"Data Source=./{appName}.db";
+                        break;
+                    case "postgres":
+                    case "postgresql":
+                        cfg.ConnectionString = $"Host=localhost;Port=5432;Database={TextUtil.ToSafeDbName(appName)};Username=postgres;Password=postgres";
+                        break;
+                    case "sqlserver":
+                    case "mssql":
+                        cfg.ConnectionString = $"Server=(localdb)\\MSSQLLocalDB;Initial Catalog={TextUtil.ToSafeDbName(appName)};Integrated Security=True;Encrypt=False";
+                        break;
+                }
+            }
         }
         else
         {
