@@ -59,21 +59,8 @@ const ThemeToggle = ({ theme, toggleTheme }) => (
 );
 
 const Navbar = ({ theme, toggleTheme }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <nav className="glass-card" style={{
-      margin: '1.5rem 5%',
-      padding: '0.8rem 2.5rem',
-      position: 'sticky',
-      top: '1.5rem',
-      zIndex: 1000,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      boxShadow: '0 15px 35px rgba(0,0,0,0.2)',
-      border: '1px solid var(--glass-border)'
-    }}>
+    <nav className="navbar glass-card">
       <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
         <motion.div
           whileHover={{ rotate: 90, scale: 1.1 }}
@@ -183,58 +170,14 @@ const Navbar = ({ theme, toggleTheme }) => {
         </Link>
       </div>
 
-      {/* Mobile Toggle */}
+      {/* Mobile Links (Icons Only) */}
       <div className="show-mobile-flex" style={{ display: 'none', gap: '1rem', alignItems: 'center' }}>
+        <Link to="/docs" style={{ color: 'var(--text-main)', display: 'flex', alignItems: 'center' }}><BookOpen size={22} /></Link>
+        <a href="https://github.com/Mohsen3-5/AsasKit" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', display: 'flex', alignItems: 'center' }}>
+          <Github size={22} />
+        </a>
         <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          style={{ background: 'none', border: 'none', color: 'var(--text-main)', cursor: 'pointer' }}
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
       </div>
-
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            style={{
-              position: 'fixed',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: '85%',
-              maxWidth: '320px',
-              background: 'var(--bg-darker)',
-              boxShadow: '-10px 0 50px rgba(0,0,0,0.3)',
-              zIndex: 2000,
-              padding: '4rem 2rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2rem',
-              borderLeft: '1px solid var(--glass-border)'
-            }}
-          >
-            <button
-              onClick={() => setIsOpen(false)}
-              style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'none', border: 'none', color: 'var(--text-main)', cursor: 'pointer' }}
-            >
-              <X size={32} />
-            </button>
-            <Link to="/docs" onClick={() => setIsOpen(false)} style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '1.5rem', fontWeight: 900, fontFamily: "'Unbounded', sans-serif" }}>DOCS</Link>
-            <a href="https://github.com/Mohsen3-5/AsasKit" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '1.5rem', fontWeight: 900, fontFamily: "'Unbounded', sans-serif" }}>GITHUB</a>
-            <div style={{ marginTop: 'auto' }}>
-              <Link to="/docs" onClick={() => setIsOpen(false)}>
-                <button className="glow-btn" style={{ width: '100%', padding: '20px' }}>Get Started</button>
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </nav>
   );
 };
@@ -354,7 +297,7 @@ const Hero = () => (
           whileTap={{ scale: 0.95 }}
           onClick={() => document.getElementById('install')?.scrollIntoView({ behavior: 'smooth' })}
           className="glow-btn"
-          style={{ fontSize: '1.2rem', padding: '24px 56px' }}
+          style={{ fontSize: '1.1rem', padding: '18px 42px' }}
         >
           Install Now
         </motion.button>
@@ -364,18 +307,18 @@ const Hero = () => (
           onClick={() => document.getElementById('quick-start')?.scrollIntoView({ behavior: 'smooth' })}
           className="glass-card"
           style={{
-            padding: '24px 56px',
+            padding: '18px 42px',
             borderRadius: '20px',
             fontWeight: 800,
-            fontSize: '1.2rem',
+            fontSize: '1.1rem',
             color: 'var(--text-main)',
             border: '2px solid var(--glass-border)',
             display: 'flex',
             alignItems: 'center',
-            gap: '1.2rem'
+            gap: '1rem'
           }}
         >
-          Quick Start <Terminal size={24} />
+          Quick Start <Terminal size={20} />
         </motion.button>
       </motion.div>
     </div>
@@ -390,7 +333,7 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
     transition={{ duration: 0.7, delay }}
     className="glass-card glowing-border"
     style={{
-      padding: '4.5rem 3.5rem',
+      padding: '3rem 2rem',
       textAlign: 'left',
       position: 'relative',
       overflow: 'hidden'
@@ -423,7 +366,7 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
 );
 
 const ModuleShowcase = () => (
-  <section style={{ padding: '12rem 0' }}>
+  <section id="ecosystem" style={{ padding: '8rem 0' }}>
     <div className="container">
       <motion.div
         initial={{ opacity: 0, x: -50 }}
@@ -446,8 +389,8 @@ const ModuleShowcase = () => (
       </motion.div>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
-        gap: '4rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '2.5rem'
       }}>
         <FeatureCard
           delay={0.1}
@@ -507,8 +450,8 @@ const Installation = () => {
           viewport={{ once: true }}
           className="glass-card glowing-border"
           style={{
-            padding: '4rem',
-            borderRadius: '40px',
+            padding: '2.5rem 1.5rem',
+            borderRadius: '32px',
             background: 'linear-gradient(135deg, var(--glass) 0%, rgba(99, 102, 241, 0.05) 100%)',
             textAlign: 'center'
           }}
@@ -556,11 +499,14 @@ const Installation = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  gap: '1rem',
                   fontFamily: '"Fira Code", monospace',
-                  fontSize: '0.9rem',
-                  border: '1px solid var(--glass-border)'
+                  fontSize: '0.85rem',
+                  border: '1px solid var(--glass-border)',
+                  overflowX: 'auto',
+                  width: '100%'
                 }}>
-                  <code style={{ color: '#e6edf3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{step.command}</code>
+                  <code style={{ color: '#e6edf3', whiteSpace: 'nowrap' }}>{step.command}</code>
                   <button
                     onClick={() => copyToClipboard(step.command)}
                     style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '5px' }}
@@ -611,10 +557,10 @@ function App() {
           </Routes>
         </AnimatePresence>
 
-        <footer style={{ padding: '12rem 0 6rem', borderTop: '2px solid var(--glass-border)', marginTop: '10rem', background: 'rgba(0,0,0,0.03)' }}>
+        <footer style={{ padding: '6rem 0 4rem', borderTop: '2px solid var(--glass-border)', marginTop: '8rem', background: 'rgba(0,0,0,0.03)' }}>
           <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '8rem', marginBottom: '8rem' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem', marginBottom: '4rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
                   <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M50 10L90 85H10L50 10Z" stroke="var(--primary)" strokeWidth="8" />
@@ -626,7 +572,7 @@ function App() {
                   The architectural foundation for the web's next 10 years. Pure, modular, and uncompromising.
                 </p>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '3rem' }}>
                 <div>
                   <h4 style={{ color: 'var(--text-main)', marginBottom: '2.5rem', fontSize: '1.2rem', fontWeight: 900, fontFamily: "'Unbounded', sans-serif" }}>TECH</h4>
                   <ul style={{ listStyle: 'none', padding: 0, color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '1.5rem', fontSize: '1.1rem' }}>

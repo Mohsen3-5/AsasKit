@@ -249,3 +249,71 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+/* --- Responsive & Utilities --- */
+
+.navbar {
+  margin: 1.5rem 5%;
+  padding: 0.8rem 2.5rem;
+  position: sticky;
+  top: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .navbar { margin: 1rem 3%; padding: 0.8rem 1.5rem; }
+  .container { padding: 0 2rem; }
+}
+
+@media (max-width: 768px) {
+  .navbar { margin: 0.8rem 2%; padding: 0.7rem 1.2rem; }
+  .container { padding: 0 1.5rem; }
+  .hide-mobile { display: none !important; }
+  .show-mobile-flex { display: flex !important; }
+  section { padding: 4.5rem 0 !important; }
+  .glass-card { 
+    padding: 2.5rem 1.2rem !important;
+    border-radius: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 1rem; }
+  h1, h2 { letter-spacing: -2px !important; }
+}
+
+.show-mobile-flex {
+  display: none;
+}
+
+
+/* --- Docs Layout --- */
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 5rem;
+  padding: 6rem 1rem;
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: 8rem;
+  align-self: start;
+}
+
+@media (max-width: 1024px) {
+  .docs-layout {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 3rem 1rem;
+  }
+  
+  .docs-sidebar {
+    position: relative;
+    top: 0;
+  }
+}
+

@@ -1105,8 +1105,8 @@ dotnet new asas-web -n MyCoolApp`} />
     };
 
     return (
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '5rem', padding: '6rem 2rem' }}>
-            <aside style={{ position: 'sticky', top: '8rem', alignSelf: 'start' }}>
+        <div className="docs-layout container">
+            <aside className="docs-sidebar">
                 <div style={{ position: 'relative', marginBottom: '2.5rem' }}>
                     <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                     <input

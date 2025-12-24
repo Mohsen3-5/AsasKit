@@ -30,7 +30,7 @@ const QuickStart = () => {
                     viewport={{ once: true }}
                     className="glass-card glowing-border"
                     style={{
-                        padding: '5rem',
+                        padding: '3rem 2rem',
                         borderRadius: '40px',
                         background: 'linear-gradient(135deg, var(--glass) 0%, rgba(99, 102, 241, 0.03) 100%)',
                         textAlign: 'center',
@@ -41,28 +41,28 @@ const QuickStart = () => {
                     <motion.div
                         initial={{ scale: 0.9 }}
                         whileInView={{ scale: 1 }}
-                        style={{ marginBottom: '3rem' }}
+                        style={{ marginBottom: '2.5rem' }}
                     >
                         <h2 style={{
-                            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+                            fontSize: 'clamp(2rem, 6vw, 4.5rem)',
                             fontWeight: 900,
-                            marginBottom: '1.5rem',
-                            letterSpacing: '-3px',
-                            lineHeight: 1,
+                            marginBottom: '1rem',
+                            letterSpacing: '-2px',
+                            lineHeight: 1.1,
                             fontFamily: "'Unbounded', sans-serif"
                         }}>
                             READY TO <span className="primary-gradient-text">LAUNCH?</span>
                         </h2>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
                             Configure and generate your scaffolding command in seconds.
                         </p>
                     </motion.div>
 
                     <div style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                        gap: '3rem',
-                        marginBottom: '4rem',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                        gap: '2rem',
+                        marginBottom: '3rem',
                         textAlign: 'left'
                     }}>
                         {/* App Name Input */}
@@ -97,7 +97,7 @@ const QuickStart = () => {
                             <label style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px' }}>
                                 Database Provider
                             </label>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
+                            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                                 {providers.map((p) => (
                                     <motion.button
                                         key={p.id}
@@ -130,15 +130,15 @@ const QuickStart = () => {
                     {/* Generated Command Area */}
                     <div style={{
                         background: '#010409',
-                        padding: '2.5rem',
+                        padding: '1.5rem 2rem',
                         borderRadius: '24px',
                         border: '2px solid var(--glass-border)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        gap: '2rem',
+                        gap: '1.5rem',
                         fontFamily: '"Fira Code", monospace',
-                        fontSize: '1.1rem',
+                        fontSize: '1rem',
                         boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
                         position: 'relative',
                         overflow: 'hidden'
